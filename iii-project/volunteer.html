@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Volunteer Command Center | CareCircle AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="volunteer">
+  <nav class="navbar scrolled" id="main-nav">
+    <a href="index.html" class="logo"><span class="logo-icon"></span>CareCircle<span>AI</span></a>
+    <ul class="nav-links" id="nav-menu"></ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+  <main class="page-container wide-page" data-carecircle-loading>
+    <div class="page-header dashboard-page-header">
+      <div>
+        <span class="eyebrow">Field Operations</span>
+        <h1>Volunteer Command Center</h1>
+        <p>Prioritize risk, coordinate follow-ups, and prepare recurring transfusions before they become emergencies.</p>
+      </div>
+      <a href="outreach.html" class="btn btn-primary">Launch Outreach Agent</a>
+    </div>
+
+    <section class="admin-metrics volunteer-metrics" id="volunteer-metrics"></section>
+
+    <section class="dashboard-card">
+      <div class="panel-title-row"><div><span class="eyebrow">Live Workload</span><h2>Active Cases</h2></div></div>
+      <div class="active-case-grid" id="active-case-grid"></div>
+    </section>
+
+    <section class="dashboard-grid two-col volunteer-grid">
+      <div class="dashboard-card">
+        <div class="panel-title-row"><div><span class="eyebrow">Immediate Attention</span><h2>High-Risk Patients</h2></div></div>
+        <div class="alert-list" id="high-risk-list"></div>
+      </div>
+      <div class="dashboard-card">
+        <div class="panel-title-row"><div><span class="eyebrow">Action Queue</span><h2>Pending Follow-Ups</h2></div></div>
+        <div class="follow-up-list" id="follow-up-list"></div>
+      </div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="panel-title-row"><div><span class="eyebrow">14-Day Window</span><h2>Upcoming Transfusions</h2></div></div>
+      <div class="upcoming-calendar" id="upcoming-calendar"></div>
+    </section>
+  </main>
+
+  <footer><div class="footer-bottom"><p>&copy; 2026 CareCircle AI. Volunteer operations console.</p><p>Predict, prepare, coordinate, prevent.</p></div></footer>
+  <script src="app.js?v=20260607f"></script>
+  <script src="carecircle-core.js?v=20260607f"></script>
+  <script src="carecircle-pages.js?v=20260607f"></script>
+</body>
+</html>

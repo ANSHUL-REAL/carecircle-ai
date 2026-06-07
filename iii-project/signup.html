@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up | CareCircle AI</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .signup-shell {
+      max-width: 760px;
+    }
+
+    .signup-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .signup-role {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .signup-role strong {
+      display: block;
+      color: var(--text-primary);
+      margin-bottom: 6px;
+      font-size: 15px;
+    }
+
+    .signup-role span {
+      color: var(--text-secondary);
+      display: block;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .signup-role.active {
+      border-color: var(--accent-red);
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+      background: rgba(239, 68, 68, 0.06);
+    }
+
+    .auth-notice {
+      display: none;
+      margin-bottom: 20px;
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .auth-notice.error {
+      display: block;
+      background: rgba(255, 94, 98, 0.07);
+      border: 1px solid rgba(255, 94, 98, 0.25);
+      color: #ff5e62;
+    }
+
+    @media (max-width: 700px) {
+      .signup-grid,
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar" id="main-nav">
+    <a href="index.html" class="logo">
+      <span class="logo-icon"></span>
+      CareCircle<span>AI</span>
+    </a>
+    <ul class="nav-links" id="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="request.html">Find Blood</a></li>
+      <li><a href="register.html">Register Donor</a></li>
+      <li><a href="hoon-buddy.html">Hoon Buddy</a></li>
+      <li><a href="map.html">Blood Banks</a></li>
+      <li><a href="login.html">Sign In</a></li>
+      <li><a href="signup.html" class="active">Sign Up</a></li>
+      <li><a href="request.html" class="btn-cta">Request Now</a></li>
+    </ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+  <main class="page-container signup-shell">
+    <div class="page-header">
+      <h1>Create Your CareCircle Account</h1>
+      <p>Join as a patient, donor, or coordinator and start using the CareCircle AI network.</p>
+    </div>
+
+    <div class="auth-notice" id="signup-error"></div>
+
+    <div class="form-card">
+      <form id="signup-form">
+        <label>Choose Account Type</label>
+        <div class="signup-grid" id="signup-roles">
+          <button type="button" class="signup-role active" data-role="patient">
+            <strong>Patient</strong>
+            <span>Request blood and track your care circle.</span>
+          </button>
+          <button type="button" class="signup-role" data-role="donor">
+            <strong>Donor</strong>
+            <span>Register availability and support nearby patients.</span>
+          </button>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="signup-name">Full Name</label>
+            <input type="text" id="signup-name" placeholder="Enter your name" required autocomplete="name">
+          </div>
+          <div class="form-group">
+            <label for="signup-email">Email</label>
+            <input type="email" id="signup-email" placeholder="you@example.com" required autocomplete="email">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="signup-city">City</label>
+            <input type="text" id="signup-city" placeholder="Hyderabad" required autocomplete="address-level2">
+          </div>
+          <div class="form-group">
+            <label for="signup-blood">Blood Group</label>
+            <select id="signup-blood">
+              <option value="">Not sure / Not needed</option>
+              <option>O-</option>
+              <option>O+</option>
+              <option>A-</option>
+              <option>A+</option>
+              <option>B-</option>
+              <option>B+</option>
+              <option>AB-</option>
+              <option>AB+</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" placeholder="Create a password" required minlength="6" autocomplete="new-password">
+            <p class="form-help">Use at least 6 characters for your cloud account.</p>
+          </div>
+          <div class="form-group">
+            <label for="signup-confirm">Confirm Password</label>
+            <input type="password" id="signup-confirm" placeholder="Repeat password" required minlength="6" autocomplete="new-password">
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+      </form>
+      <p class="auth-switch">Already have an account? <a href="login.html">Sign in</a></p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>CareCircle<span>AI</span></h3>
+        <p>AI-powered blood support for patients, donors, and local response teams.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="request.html">Find Donors</a></li>
+          <li><a href="register.html">Register as Donor</a></li>
+          <li><a href="hoon-buddy.html">Hoon Buddy AI</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Access</h4>
+        <ul>
+          <li><a href="login.html">Sign In</a></li>
+          <li><a href="signup.html">Sign Up</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Locate</h4>
+        <ul>
+          <li><a href="map.html">Blood Bank Map</a></li>
+          <li><a href="admin.html">Admin Dashboard</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 CareCircle AI. All Rights Reserved.</p>
+      <p>Accounts are stored securely in AWS.</p>
+    </div>
+  </footer>
+
+  <script src="aws-config.js?v=20260607f"></script>
+  <script src="app.js?v=20260607f"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const roleButtons = document.querySelectorAll('.signup-role');
+      const form = document.getElementById('signup-form');
+      const errorBox = document.getElementById('signup-error');
+      let selectedRole = 'patient';
+
+      roleButtons.forEach((button) => {
+        button.addEventListener('click', () => {
+          roleButtons.forEach((item) => item.classList.remove('active'));
+          button.classList.add('active');
+          selectedRole = button.dataset.role;
+        });
+      });
+
+      form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        errorBox.className = 'auth-notice';
+        errorBox.textContent = '';
+        const submitButton = form.querySelector('button[type="submit"]');
+
+        const name = document.getElementById('signup-name').value.trim();
+        const email = document.getElementById('signup-email').value.trim().toLowerCase();
+        const city = document.getElementById('signup-city').value.trim();
+        const bloodGroup = document.getElementById('signup-blood').value;
+        const password = document.getElementById('signup-password').value;
+        const confirm = document.getElementById('signup-confirm').value;
+
+        if (password !== confirm) {
+          errorBox.textContent = 'Passwords do not match.';
+          errorBox.className = 'auth-notice error';
+          return;
+        }
+
+        try {
+          if (!window.CareCircleAuth || !window.CareCircleAuth.baseUrl) {
+            throw new Error('AWS auth API is not configured.');
+          }
+          submitButton.disabled = true;
+          submitButton.textContent = 'Creating Account...';
+          const data = await window.CareCircleAuth.request('/auth/signup', {
+            method: 'POST',
+            body: JSON.stringify({
+              name,
+              email,
+              city,
+              bloodGroup,
+              password,
+              role: selectedRole
+            })
+          });
+          const user = data.user;
+          sessionStorage.setItem('carecircle_session', JSON.stringify({
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            displayName: user.displayName,
+            linkedId: user.linkedId,
+            timestamp: Date.now()
+          }));
+          sessionStorage.setItem('carecircle_auth_token', data.token);
+          localStorage.setItem('carecircle_session', JSON.stringify({
+            username: user.username,
+            email: user.email,
+            role: user.role,
+            displayName: user.displayName,
+            linkedId: user.linkedId,
+            timestamp: Date.now()
+          }));
+          localStorage.setItem('carecircle_auth_token', data.token);
+
+          const params = new URLSearchParams(window.location.search);
+          const next = params.get('next');
+          if (next) {
+            window.location.href = next;
+          } else if (selectedRole === 'admin') {
+            window.location.href = 'admin.html';
+          } else if (selectedRole === 'donor') {
+            window.location.href = 'register.html';
+          } else {
+            window.location.href = 'request.html';
+          }
+        } catch (error) {
+          errorBox.textContent = error.message;
+          errorBox.className = 'auth-notice error';
+          submitButton.disabled = false;
+          submitButton.textContent = 'Create Account';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

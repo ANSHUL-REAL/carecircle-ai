@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In | CareCircle AI</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    /* Premium Login Specific Overrides */
+    .role-selectors {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+    
+    .role-card {
+      background-color: var(--bg-tertiary);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .role-card:hover {
+      border-color: rgba(249, 222, 113, 0.4);
+      transform: translateY(-2px);
+    }
+    
+    .role-card.active {
+      border-color: var(--accent-red);
+      background-color: rgba(249, 222, 113, 0.05);
+      box-shadow: 0 0 15px var(--accent-red-glow);
+    }
+    
+    .role-icon {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: var(--text-primary);
+    }
+
+    .role-icon svg {
+      width: 27px;
+      height: 27px;
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.9;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+
+    .role-card.active .role-icon {
+      color: var(--accent-red);
+    }
+    
+    .role-card span {
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .role-card.active span {
+      color: var(--accent-red);
+    }
+    
+    .sandbox-hint {
+      margin-top: 24px;
+      background-color: rgba(255, 204, 0, 0.03);
+      border: 1px dashed var(--color-orange);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      font-family: monospace;
+      font-size: 11px;
+    }
+
+    .sandbox-hint h5 {
+      color: var(--color-orange);
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .sandbox-hint ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .sandbox-hint li {
+      color: var(--text-secondary);
+    }
+
+    .sandbox-hint strong {
+      color: var(--accent-red);
+    }
+
+    .login-error-log {
+      display: none;
+      background-color: rgba(255, 94, 98, 0.05);
+      border: 1px solid rgba(255, 94, 98, 0.25);
+      border-radius: var(--radius-sm);
+      color: #ff5e62;
+      padding: 12px;
+      font-size: 12px;
+      margin-bottom: 20px;
+      font-family: monospace;
+      animation: shake 0.3s ease;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="main-nav">
+    <a href="index.html" class="logo">
+      <span class="logo-icon"></span>
+      CareCircle<span>AI</span>
+    </a>
+    <ul class="nav-links" id="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="request.html">Find Blood</a></li>
+      <li><a href="register.html">Register Donor</a></li>
+      <li><a href="hoon-buddy.html">Hoon Buddy Voice</a></li>
+      <li><a href="map.html">Blood Banks</a></li>
+      <li><a href="admin.html">Admin</a></li>
+      <li><a href="login.html" class="active">Sign In</a></li>
+      <li><a href="signup.html">Sign Up</a></li>
+      <li><a href="request.html" class="btn-cta">Request Now</a></li>
+    </ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+  <!-- Main Content Container -->
+  <div class="page-container" style="max-width: 550px; margin-bottom: 60px;">
+    <div class="page-header" style="text-align: center;">
+      <h1>Sign In to CareCircle</h1>
+      <p>Access your patient, donor, or admin dashboard and continue coordinating care.</p>
+    </div>
+
+    <!-- Login Error Log -->
+    <div class="login-error-log" id="login-error-box">
+      SECURITY EXCEPTION: Access key signature invalid.
+    </div>
+
+    <!-- Custom Authentication Form -->
+    <div class="form-card">
+      <form id="login-form">
+        
+        <!-- Role Selectors -->
+        <label style="margin-bottom: 8px; display: block;">Select Access Role Node</label>
+        <div class="role-selectors">
+          <div class="role-card active" data-role="patient">
+            <div class="role-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 2.5s-6 6.1-6 11a6 6 0 0 0 12 0c0-4.9-6-11-6-11Z"></path><path d="M9.5 14.5c.5 1.2 1.4 1.8 2.7 1.8"></path></svg>
+            </div>
+            <span>Recipient</span>
+          </div>
+          <div class="role-card" data-role="donor">
+            <div class="role-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 3 5 6v5c0 4.6 2.9 8 7 10 4.1-2 7-5.4 7-10V6l-7-3Z"></path><path d="M9 12h6M12 9v6"></path></svg>
+            </div>
+            <span>Donor</span>
+          </div>
+          <div class="role-card" data-role="admin">
+            <div class="role-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"></rect><path d="M8 20h8M12 16v4"></path><path d="m9.5 10 1.7 1.7 3.5-3.7"></path></svg>
+            </div>
+            <span>Admin</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="login-username">Email or Username</label>
+          <input type="text" id="login-username" placeholder="Enter email or username..." required autofocus autocomplete="username">
+        </div>
+
+        <div class="form-group" style="margin-bottom: 24px;">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" placeholder="Enter password..." required autocomplete="current-password">
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">
+          Sign In
+        </button>
+      </form>
+      <p class="auth-switch">New to CareCircle? <a href="signup.html">Create an account</a></p>
+    </div>
+
+    <div class="sandbox-hint">
+      <h5>Cloud Auth Active</h5>
+      <ul>
+        <li>Accounts are stored in <strong>AWS DynamoDB</strong>.</li>
+        <li>Use <strong>Sign Up</strong> first, then sign in with the same role and password.</li>
+        <li>Logout clears the saved session and cloud access token.</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>CareCircle<span>AI</span></h3>
+        <p>Rewriting how the world finds blood with compassion, code, and community. AI-powered matching that prioritizes patient survival.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="request.html">Find Donors</a></li>
+          <li><a href="register.html">Register as Donor</a></li>
+          <li><a href="hoon-buddy.html">Hoon Buddy AI</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Locate</h4>
+        <ul>
+          <li><a href="map.html">Blood Bank Map</a></li>
+          <li><a href="admin.html">Admin Dashboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Mission</h4>
+        <ul>
+          <li><a href="https://supabase.com" target="_blank">Supabase DB</a></li>
+          <li><a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 CareCircle AI. All Rights Reserved. Built for global emergency response.</p>
+      <p>Secure connection verified with Supabase RLS</p>
+    </div>
+  </footer>
+
+  <script src="aws-config.js?v=20260607f"></script>
+  <script src="app.js?v=20260607f"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const roleCards = document.querySelectorAll('.role-card');
+      let selectedRole = 'patient';
+
+      roleCards.forEach(card => {
+        card.addEventListener('click', () => {
+          roleCards.forEach(c => c.classList.remove('active'));
+          card.classList.add('active');
+          selectedRole = card.getAttribute('data-role');
+          
+        });
+      });
+
+      // Handle submit
+      const loginForm = document.getElementById('login-form');
+      const loginErrorBox = document.getElementById('login-error-box');
+
+      if (loginForm) {
+        loginForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          const username = document.getElementById('login-username').value.trim();
+          const password = document.getElementById('login-password').value;
+          const submitButton = loginForm.querySelector('button[type="submit"]');
+          loginErrorBox.style.display = 'none';
+          submitButton.disabled = true;
+          submitButton.textContent = 'Signing In...';
+
+          try {
+            if (!window.CareCircleAuth || !window.CareCircleAuth.baseUrl) {
+              throw new Error('AWS auth API is not configured.');
+            }
+            const data = await window.CareCircleAuth.request('/auth/login', {
+              method: 'POST',
+              body: JSON.stringify({
+                identity: username,
+                password,
+                role: selectedRole
+              })
+            });
+            const user = data.user;
+            const session = {
+              username: user.username,
+              email: user.email,
+              role: user.role,
+              displayName: user.displayName,
+              linkedId: user.linkedId,
+              timestamp: Date.now()
+            };
+            sessionStorage.setItem('carecircle_session', JSON.stringify(session));
+            sessionStorage.setItem('carecircle_auth_token', data.token);
+            localStorage.setItem('carecircle_session', JSON.stringify(session));
+            localStorage.setItem('carecircle_auth_token', data.token);
+
+            const params = new URLSearchParams(window.location.search);
+            const next = params.get('next');
+            if (next) {
+              window.location.href = next;
+            } else if (selectedRole === 'admin') {
+              window.location.href = 'admin.html';
+            } else if (selectedRole === 'donor') {
+              window.location.href = 'register.html';
+            } else {
+              window.location.href = 'request.html';
+            }
+          } catch (error) {
+            loginErrorBox.textContent = `SIGN IN FAILED: ${error.message}`;
+            loginErrorBox.style.display = 'block';
+            submitButton.disabled = false;
+            submitButton.textContent = 'Sign In';
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>

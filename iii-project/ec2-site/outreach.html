@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Autonomous Outreach Agent | CareCircle AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="outreach">
+  <nav class="navbar scrolled" id="main-nav">
+    <a href="index.html" class="logo"><span class="logo-icon"></span>CareCircle<span>AI</span></a>
+    <ul class="nav-links" id="nav-menu"></ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+  <main class="page-container wide-page" data-carecircle-loading>
+    <div class="page-header dashboard-page-header">
+      <div>
+        <span class="eyebrow">Autonomous Coordination Simulation</span>
+        <h1>Outreach & Escalation Agent</h1>
+        <p>Rank donors, track responses, and move through the five-level escalation ladder automatically.</p>
+      </div>
+      <label class="selector-control">Patient
+        <select id="outreach-patient-selector"></select>
+      </label>
+    </div>
+
+    <section class="dashboard-card outreach-control-card">
+      <div>
+        <span class="eyebrow">Active Case</span>
+        <h2 id="outreach-patient-meta">Loading...</h2>
+      </div>
+      <div class="outreach-actions">
+        <button class="btn btn-secondary" id="reset-outreach">Reset</button>
+        <button class="btn btn-primary" id="auto-simulate">Auto-Simulate Outreach</button>
+      </div>
+    </section>
+
+    <section class="dashboard-grid outreach-grid">
+      <div class="dashboard-card outreach-queue-card">
+        <div class="panel-title-row"><div><span class="eyebrow">Ranked Contact Plan</span><h2>Outreach Queue</h2></div></div>
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead><tr><th>#</th><th>Donor</th><th>Circle</th><th>Match</th><th>Status</th></tr></thead>
+            <tbody id="outreach-queue-body"></tbody>
+          </table>
+        </div>
+      </div>
+      <div class="dashboard-card">
+        <div class="panel-title-row"><div><span class="eyebrow">Fail-Safe Workflow</span><h2>Escalation Ladder</h2></div></div>
+        <div class="escalation-ladder" id="escalation-ladder"></div>
+      </div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="panel-title-row"><div><span class="eyebrow">Live Outcomes</span><h2>Response Analytics</h2></div></div>
+      <div class="response-analytics" id="response-analytics"></div>
+    </section>
+  </main>
+
+  <footer><div class="footer-bottom"><p>&copy; 2026 CareCircle AI. Outreach simulation uses local demo state.</p><p>No messages are sent externally.</p></div></footer>
+  <script src="app.js?v=20260607f"></script>
+  <script src="carecircle-core.js?v=20260607f"></script>
+  <script src="carecircle-pages.js?v=20260607f"></script>
+</body>
+</html>

@@ -1,0 +1,4 @@
+FROM nginx:1.27-alpine
+
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY ec2-site/ /usr/share/nginx/html/

@@ -1,0 +1,11 @@
+{
+  "patient_cycle_model": {
+    "MAE": 5.967860698699951,
+    "MSE": 51.263763427734375
+  },
+  "donor_active_model": {
+    "Accuracy": 0.9481981992721558
+  },
+  "trained_at": "2026-06-07T08:44:38.502135",
+  "framework": "pytorch"
+}

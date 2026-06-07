@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Request Blood | CareCircle AI AI Matching Engine</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="main-nav">
+    <a href="index.html" class="logo">
+      <span class="logo-icon"></span>
+      CareCircle<span>AI</span>
+    </a>
+    <ul class="nav-links" id="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="request.html" class="active">Find Blood</a></li>
+      <li><a href="register.html">Register Donor</a></li>
+      <li><a href="hoon-buddy.html">Hoon Buddy Voice</a></li>
+      <li><a href="map.html">Blood Banks</a></li>
+      <li><a href="admin.html">Admin</a></li>
+      <li><a href="request.html" class="btn-cta">Request Now</a></li>
+    </ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+  <!-- Main Content Container -->
+  <div class="page-container">
+    <div class="page-header">
+      <h1>Find Compatible Donors Instantly</h1>
+      <p>Enter patient criteria. Our medical intelligence AI matches patient needs with nearby active, eligible donor nodes.</p>
+    </div>
+
+    <!-- Patient Request Intake Form -->
+    <div class="form-card">
+      <form id="request-form">
+        <div class="form-group">
+          <label for="patient-name">Patient Name</label>
+          <input type="text" id="patient-name" placeholder="e.g. Anjali Verma" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="blood-group">Required Blood Group</label>
+            <select id="blood-group" required>
+              <option value="">Select Blood Group</option>
+              <option value="O-">O- (Universal Donor)</option>
+              <option value="O+">O+</option>
+              <option value="A-">A-</option>
+              <option value="A+">A+</option>
+              <option value="B-">B-</option>
+              <option value="B+">B+</option>
+              <option value="AB-">AB-</option>
+              <option value="AB+">AB+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="urgency-level">Urgency Level</label>
+            <select id="urgency-level" required>
+              <option value="Standard">Standard (Within 72h)</option>
+              <option value="Urgent">Urgent (Within 24h)</option>
+              <option value="Critical" selected>Critical (Emergency Match)</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="patient-country">Country</label>
+            <input type="text" id="patient-country" placeholder="e.g. India" value="India" required>
+          </div>
+          <div class="form-group">
+            <label for="patient-city">City</label>
+            <input type="text" id="patient-city" placeholder="e.g. Hyderabad" value="Hyderabad" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="patient-hospital">Hospital / Care Center</label>
+            <input type="text" id="patient-hospital" placeholder="e.g. Apollo Hospitals" required>
+          </div>
+          <div class="form-group">
+            <label for="disease-type">Care Type</label>
+            <select id="disease-type" required>
+              <option value="Emergency">Emergency / One-time</option>
+              <option value="Thalassemia">Thalassemia</option>
+              <option value="Sickle Cell Disease">Sickle Cell Disease</option>
+              <option value="Cancer Treatment">Cancer Treatment</option>
+              <option value="Dialysis">Dialysis</option>
+              <option value="Surgery">Surgery</option>
+              <option value="Other Chronic">Other Chronic Condition</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="last-transfusion">Last Transfusion Date (optional)</label>
+            <input type="date" id="last-transfusion">
+          </div>
+          <div class="form-group">
+            <label for="date-needed">Date Needed By</label>
+            <input type="date" id="date-needed" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%;">
+          Run AI Donor Matcher
+        </button>
+      </form>
+    </div>
+
+    <!-- AI Match Results Display Panel -->
+    <div class="results-card" id="results-card">
+      <h2>
+        AI Search Results
+        <div>
+          <span id="active-urgency-badge" class="badge"></span>
+          <span id="matched-count-badge" class="badge badge-green" style="margin-left: 8px;"></span>
+        </div>
+      </h2>
+
+      <!-- Matching Stepper Logs -->
+      <div class="step-stepper" id="step-container">
+        <!-- Filled via JS during search -->
+      </div>
+
+      <div class="match-list" id="match-container" style="margin-top: 32px;">
+        <!-- Card entries rendered dynamically via JS -->
+      </div>
+    </div>
+
+    <div class="results-card care-plan-card" id="care-plan-card">
+      <h2>Predictive Care Plan</h2>
+      <div id="care-plan-container"></div>
+    </div>
+
+    <div class="results-card tracker-card" id="family-tracker-card">
+      <h2>Family Status Tracker</h2>
+      <div id="family-tracker-container"></div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>CareCircle<span>AI</span></h3>
+        <p>Rewriting how the world finds blood with compassion, code, and community. AI-powered matching that prioritizes patient survival.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="request.html">Find Donors</a></li>
+          <li><a href="register.html">Register as Donor</a></li>
+          <li><a href="hoon-buddy.html">Hoon Buddy AI</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Locate</h4>
+        <ul>
+          <li><a href="map.html">Blood Bank Map</a></li>
+          <li><a href="admin.html">Admin Dashboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Mission</h4>
+        <ul>
+          <li><a href="https://supabase.com" target="_blank">Supabase DB</a></li>
+          <li><a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 CareCircle AI. All Rights Reserved. Built for global emergency response.</p>
+      <p>Secure connection verified with Supabase RLS</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js?v=20260607f"></script>
+
+  <script>
+    // Autofill dateNeeded with tomorrow's date
+    const dateInput = document.getElementById('date-needed');
+    if (dateInput) {
+      const tomorrow = new Date();
+      tomorrow.setDate(tomorrow.getDate() + 1);
+      dateInput.value = tomorrow.toISOString().slice(0, 10);
+    }
+  </script>
+</body>
+</html>

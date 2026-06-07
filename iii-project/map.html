@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Locate Blood Banks | CareCircle AI Map Locator</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="main-nav">
+    <a href="index.html" class="logo">
+      <span class="logo-icon"></span>
+      CareCircle<span>AI</span>
+    </a>
+    <ul class="nav-links" id="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="request.html">Find Blood</a></li>
+      <li><a href="register.html">Register Donor</a></li>
+      <li><a href="hoon-buddy.html">Hoon Buddy Voice</a></li>
+      <li><a href="map.html" class="active">Blood Banks</a></li>
+      <li><a href="admin.html">Admin</a></li>
+      <li><a href="request.html" class="btn-cta">Request Now</a></li>
+    </ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+  <!-- Main Content Container -->
+  <div class="page-container" style="max-width: 1200px; margin-bottom: 40px;">
+    <div class="page-header" style="margin-bottom: 24px;">
+      <h1>Locate Verified Blood Banks</h1>
+      <p>Search by city or country to map nearby reserve banks, coordinates, and live simulated blood group inventories.</p>
+    </div>
+
+    <!-- Map and Sidebar Layout -->
+    <div class="map-wrapper">
+      
+      <!-- Left Search Sidebar -->
+      <div class="map-sidebar">
+        <div class="map-search">
+          <input type="text" id="map-search-input" placeholder="e.g. Hyderabad, Mumbai, Chennai..." value="Hyderabad">
+          <button class="map-search-btn" id="map-search-btn" aria-label="Perform Search">🔍</button>
+        </div>
+        
+        <div class="map-list" id="bank-list-container">
+          <!-- Populated dynamically via app.js -->
+        </div>
+      </div>
+
+      <!-- Right Leaflet Map -->
+      <div class="map-container-box">
+        <div id="blood-banks-map" style="width: 100%; height: 100%;"></div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>CareCircle<span>AI</span></h3>
+        <p>Rewriting how the world finds blood with compassion, code, and community. AI-powered matching that prioritizes patient survival.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="request.html">Find Donors</a></li>
+          <li><a href="register.html">Register as Donor</a></li>
+          <li><a href="hoon-buddy.html">Hoon Buddy AI</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Locate</h4>
+        <ul>
+          <li><a href="map.html">Blood Bank Map</a></li>
+          <li><a href="admin.html">Admin Dashboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Mission</h4>
+        <ul>
+          <li><a href="https://supabase.com" target="_blank">Supabase DB</a></li>
+          <li><a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 CareCircle AI. All Rights Reserved. Built for global emergency response.</p>
+      <p>Secure connection verified with Supabase RLS</p>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  
+  <!-- Scripts -->
+  <script src="app.js?v=20260607f"></script>
+</body>
+</html>

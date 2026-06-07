@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Command Center | CareCircle AI Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="admin">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="main-nav">
+    <a href="index.html" class="logo">
+      <span class="logo-icon"></span>
+      CareCircle<span>AI</span>
+    </a>
+    <ul class="nav-links" id="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="request.html">Find Blood</a></li>
+      <li><a href="register.html">Register Donor</a></li>
+      <li><a href="hoon-buddy.html">Hoon Buddy Voice</a></li>
+      <li><a href="map.html">Blood Banks</a></li>
+      <li><a href="admin.html" class="active">Admin</a></li>
+      <li><a href="request.html" class="btn-cta">Request Now</a></li>
+    </ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+  <!-- Main Content Container -->
+  <div class="page-container" style="max-width: 1200px; margin-bottom: 40px;">
+    <div class="page-header" style="margin-bottom: 24px;">
+      <h1>Admin Dashboard Control Panel</h1>
+      <p>Secure coordinator oversight powered by AWS authentication, DynamoDB, and the CareCircle automation API.</p>
+    </div>
+
+    <!-- Metric Counts Summary row -->
+    <div class="admin-metrics">
+      <div class="metric-card">
+        <span id="metric-donors-label">Total Registered</span>
+        <h2 id="metric-donors">15</h2>
+        <p>Rows available for network analysis</p>
+      </div>
+      <div class="metric-card">
+        <span id="metric-requests-label">Active Requests</span>
+        <h2 id="metric-requests">8</h2>
+        <p>Recurring-care circles monitored</p>
+      </div>
+      <div class="metric-card">
+        <span id="metric-matches-label">Success Matches</span>
+        <h2 id="metric-matches">12</h2>
+        <p>Across all active patient circles</p>
+      </div>
+      <div class="metric-card">
+        <span id="metric-countries-label">Active Countries</span>
+        <h2 id="metric-countries">5</h2>
+        <p>Active donor records in source data</p>
+      </div>
+    </div>
+
+    <!-- Admin Panel Columns -->
+    <div class="admin-layout">
+      
+      <!-- Left Column: Registry Table -->
+      <div class="admin-panel">
+        <div class="panel-header">
+          <div>
+            <h3>Full Donor Registry</h3>
+            <p style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">Loaded from the automation backend dataset, with new local signups appended.</p>
+          </div>
+          <button class="btn btn-secondary btn-sm" id="btn-export-donors">Export CSV</button>
+        </div>
+
+        <div class="admin-table-wrapper">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Group</th>
+                <th>Location</th>
+                <th>Last Donation</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="admin-table-body">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Right Column: Chart & Security Toggles -->
+      <div>
+        <!-- Distribution Chart -->
+        <div class="chart-card">
+          <h3>Full Group Distribution</h3>
+          <p style="font-size:12px; color:var(--text-secondary); margin-top:-12px; margin-bottom: 8px;">Blood-type breakdown across the full operational donor dataset.</p>
+          <div class="chart-bar-container" id="chart-container">
+            <!-- Rendered via JS -->
+          </div>
+        </div>
+
+        <!-- Security Configuration Switch -->
+        <div class="security-card">
+          <div class="security-info" id="security-message">
+            <span style="color: var(--color-green); font-weight: 700;">✓ RLS POLICIES ENFORCED (PRODUCTION STATE)</span>
+            <p style="margin-top: 4px; font-size: 11px; color: var(--text-muted);">Supabase row level policies are actively filtering credentials. Donor phone numbers are encrypted. Secure API keys and token authorizations are confirmed.</p>
+          </div>
+          <div style="flex-shrink: 0;">
+            <label class="toggle-switch">
+              <input type="checkbox" id="security-rls-toggle" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="admin-panel coordination-panel">
+      <div class="panel-header">
+        <div>
+          <h3>Volunteer Coordination Queue</h3>
+          <p>Prioritized patient cases, donor-circle readiness, and escalation controls.</p>
+        </div>
+      </div>
+      <div class="admin-table-wrapper">
+        <table class="admin-table coordination-table">
+          <thead>
+            <tr>
+              <th>Request</th>
+              <th>Patient / Need</th>
+              <th>Prediction</th>
+              <th>Risk</th>
+              <th>Circle</th>
+              <th>Status</th>
+              <th>Coordinator Action</th>
+            </tr>
+          </thead>
+          <tbody id="request-queue-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Outreach Approval Queue Panel -->
+    <div class="admin-panel coordination-panel" id="approval-queue-panel">
+      <div class="panel-header">
+        <div>
+          <h3>Outreach Approval Queue</h3>
+          <p>Pending outreach messages requiring coordinator verification prior to broadcast.</p>
+        </div>
+      </div>
+      <div class="admin-table-wrapper">
+        <table class="admin-table coordination-table">
+          <thead>
+            <tr>
+              <th>Approval ID</th>
+              <th>Case ID</th>
+              <th>Donor</th>
+              <th>Channel</th>
+              <th>Message Preview</th>
+              <th>Requested At</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="approval-queue-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Escalation & Operational Tasks Panel -->
+    <div class="admin-panel coordination-panel" id="tasks-queue-panel">
+      <div class="panel-header">
+        <div>
+          <h3>Escalation & Operational Tasks</h3>
+          <p>Manual follow-up actions required due to outreach timeouts or failure conditions.</p>
+        </div>
+      </div>
+      <div class="admin-table-wrapper">
+        <table class="admin-table coordination-table">
+          <thead>
+            <tr>
+              <th>Task ID</th>
+              <th>Case ID</th>
+              <th>Task Kind</th>
+              <th>Status</th>
+              <th>Created At</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="tasks-queue-body"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Case Event History Timeline Panel -->
+    <div class="admin-panel coordination-panel" id="event-timeline-panel" style="display: none; margin-bottom: 24px;">
+      <div class="panel-header">
+        <div>
+          <h3>Case Audit History Timeline (<span id="timeline-case-id">-</span>)</h3>
+          <p>Audit trail of case state transitions, notifications, and response updates.</p>
+        </div>
+        <button class="btn btn-secondary btn-sm" id="btn-close-timeline" type="button">Close Timeline</button>
+      </div>
+      <div id="case-timeline-container" style="padding: 24px; max-height: 400px; overflow-y: auto; background: rgba(255, 255, 255, 0.02); border-radius: var(--radius-md); font-family: monospace;">
+        <!-- Filled via JS -->
+      </div>
+    </div>
+
+    <div class="operations-analytics-grid">
+      <section class="admin-panel">
+        <div class="panel-header"><div><h3>Readiness Distribution</h3><p>Patient count by current support-risk level.</p></div></div>
+        <div id="readiness-distribution"></div>
+      </section>
+      <section class="admin-panel">
+        <div class="panel-header"><div><h3>Active Patient Overview</h3><p>Lowest-readiness cases appear first.</p></div></div>
+        <div class="operations-patients" id="operations-patients"></div>
+      </section>
+    </div>
+
+    <section class="admin-panel coordination-panel">
+      <div class="panel-header"><div><h3>Network Operations Metrics</h3><p>Retention, escalation pressure, and bridge coverage from Dataset.csv.</p></div></div>
+      <div class="operations-summary" id="operations-summary"></div>
+    </section>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>CareCircle<span>AI</span></h3>
+        <p>Rewriting how the world finds blood with compassion, code, and community. AI-powered matching that prioritizes patient survival.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="request.html">Find Donors</a></li>
+          <li><a href="register.html">Register as Donor</a></li>
+          <li><a href="hoon-buddy.html">Hoon Buddy AI</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Locate</h4>
+        <ul>
+          <li><a href="map.html">Blood Bank Map</a></li>
+          <li><a href="admin.html">Admin Dashboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Mission</h4>
+        <ul>
+          <li><a href="https://supabase.com" target="_blank">Supabase DB</a></li>
+          <li><a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 CareCircle AI. All Rights Reserved. Built for global emergency response.</p>
+      <p>Secure connection verified with Supabase RLS</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js?v=20260607f"></script>
+  <script src="carecircle-core.js?v=20260607f"></script>
+  <script src="carecircle-pages.js?v=20260607f"></script>
+</body>
+</html>

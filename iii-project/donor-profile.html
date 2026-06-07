@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donor Intelligence | CareCircle AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="donor-profile">
+  <nav class="navbar scrolled" id="main-nav">
+    <a href="index.html" class="logo"><span class="logo-icon"></span>CareCircle<span>AI</span></a>
+    <ul class="nav-links" id="nav-menu"></ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+  <main class="page-container wide-page" data-carecircle-loading>
+    <div class="page-header dashboard-page-header">
+      <div>
+        <span class="eyebrow">Fair Matching & Fatigue Prevention</span>
+        <h1>Donor Intelligence Profile</h1>
+        <p>Transparent reliability, availability, fatigue, and patient-specific match scoring.</p>
+      </div>
+      <div class="donor-selector-stack">
+        <label class="selector-control">Search donor
+          <input id="donor-search" type="search" placeholder="Name, ID, or blood group">
+        </label>
+        <label class="selector-control">Donor
+          <select id="donor-selector"></select>
+        </label>
+      </div>
+    </div>
+
+    <section class="profile-hero-grid donor-hero-grid">
+      <div class="dashboard-card patient-profile-card">
+        <div class="profile-identity">
+          <div class="profile-avatar donor-avatar" id="donor-avatar">D</div>
+          <div>
+            <span id="donor-status" class="badge badge-green">Active</span>
+            <h2 id="donor-name-display">Loading donor...</h2>
+            <p id="donor-meta"></p>
+          </div>
+          <div class="blood-token" id="donor-blood-display">--</div>
+        </div>
+      </div>
+      <div class="dashboard-card cooldown-panel" id="cooldown-panel"></div>
+    </section>
+
+    <section class="dashboard-grid two-col donor-dashboard-grid">
+      <div class="dashboard-card">
+        <div class="panel-title-row"><div><span class="eyebrow">Scoring Engine</span><h2>Intelligence Scores</h2></div></div>
+        <div class="intelligence-scores" id="intelligence-scores"></div>
+      </div>
+      <div class="dashboard-card">
+        <div class="panel-title-row"><div><span class="eyebrow">Engagement Record</span><h2>Donation History</h2></div></div>
+        <div class="donation-history" id="donation-history"></div>
+      </div>
+    </section>
+
+    <section class="dashboard-card">
+      <div class="panel-title-row"><div><span class="eyebrow">Care Circle Membership</span><h2>Assigned Patients</h2></div></div>
+      <div class="assigned-patients" id="assigned-patients"></div>
+    </section>
+  </main>
+
+  <footer><div class="footer-bottom"><p>&copy; 2026 CareCircle AI. Dataset-backed donor intelligence.</p><p>Source identifiers remain anonymized.</p></div></footer>
+  <script src="app.js?v=20260607f"></script>
+  <script src="carecircle-core.js?v=20260607f"></script>
+  <script src="carecircle-pages.js?v=20260607f"></script>
+</body>
+</html>

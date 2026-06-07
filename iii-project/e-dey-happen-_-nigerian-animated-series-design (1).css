@@ -1,0 +1,52 @@
+:root {
+  /* Colors */
+  --color-color-1: #202020;
+  --color-color-2: #212e50;
+  --color-color-3: #e0e9ff;
+  --color-color-4: #f9de71;
+  --color-color-5: #ffffff;
+
+  /* Typography */
+  --font-type-1-family: Ubuntu;
+  --font-type-1-size: 16px;
+  --font-type-1-weight: 400;
+  --font-type-1-line-height: 24px;
+  --font-type-2-family: Jua;
+  --font-type-2-size: 30px;
+  --font-type-2-weight: 700;
+  --font-type-2-line-height: 54px;
+  --font-type-2-letter-spacing: 3px;
+  --font-type-3-family: Ubuntu;
+  --font-type-3-size: 14px;
+  --font-type-3-weight: 700;
+  --font-type-3-line-height: 20px;
+  --font-type-3-letter-spacing: 0.35px;
+  --font-type-4-family: Ubuntu;
+  --font-type-4-size: 14px;
+  --font-type-4-weight: 700;
+  --font-type-4-line-height: 20px;
+  --font-type-5-family: Jua;
+  --font-type-5-size: 14px;
+  --font-type-5-weight: 700;
+  --font-type-5-line-height: 20px;
+
+  /* Spacing */
+  --spacing-space-1: 7.5px;
+  --spacing-space-2: 12px;
+  --spacing-space-3: 24px;
+  --spacing-space-4: 32px;
+  --spacing-space-5: 20px;
+  --spacing-space-6: 16px;
+  --spacing-space-7: 8px;
+  --spacing-space-8: 40px;
+  --spacing-space-9: 80px;
+  --spacing-space-10: 48px;
+
+  /* Border Radius */
+  --radius-radius-1: 32px;
+  --radius-radius-2: 48px;
+  --radius-radius-3: 6px;
+  --radius-radius-4: 24px;
+  --radius-radius-5: 16px;
+
+}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Become a Donor | CareCircle AI Registry Portal</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="main-nav">
+    <a href="index.html" class="logo">
+      <span class="logo-icon"></span>
+      CareCircle<span>AI</span>
+    </a>
+    <ul class="nav-links" id="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="request.html">Find Blood</a></li>
+      <li><a href="register.html" class="active">Register Donor</a></li>
+      <li><a href="hoon-buddy.html">Hoon Buddy Voice</a></li>
+      <li><a href="map.html">Blood Banks</a></li>
+      <li><a href="admin.html">Admin</a></li>
+      <li><a href="request.html" class="btn-cta">Request Now</a></li>
+    </ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+  <!-- Main Content Container -->
+  <div class="page-container">
+    <div class="page-header">
+      <h1>Join the CareCircle AI Donor Network</h1>
+      <p>Your details are safely encrypted and secured using Supabase Row Level Security. You will only be alerted when compatible patients request blood in your city.</p>
+    </div>
+
+    <!-- Donor Registration Form -->
+    <div class="form-card">
+      <form id="register-form">
+        
+        <!-- Live Cooldown Eligibility Widget -->
+        <div class="eligibility-banner" id="eligibility-banner">
+          <div class="eligibility-icon" style="background-color: var(--text-muted); color: var(--bg-secondary);">?</div>
+          <div class="eligibility-info">
+            <h4>Check Cooldown Eligibility</h4>
+            <p>Select your last blood donation date below to calculate your availability status.</p>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="donor-name">Full Name</label>
+          <input type="text" id="donor-name" placeholder="e.g. Neha Sharma" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="donor-blood">Blood Group</label>
+            <select id="donor-blood" required>
+              <option value="">Select Blood Group</option>
+              <option value="O-">O- (Universal Donor)</option>
+              <option value="O+">O+</option>
+              <option value="A-">A-</option>
+              <option value="A+">A+</option>
+              <option value="B-">B-</option>
+              <option value="B+">B+</option>
+              <option value="AB-">AB-</option>
+              <option value="AB+">AB+</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="donor-last-donation">Last Donation Date</label>
+            <input type="date" id="donor-last-donation" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="donor-country">Country</label>
+            <input type="text" id="donor-country" placeholder="e.g. India" value="India" required>
+          </div>
+          <div class="form-group">
+            <label for="donor-city">City</label>
+            <input type="text" id="donor-city" placeholder="e.g. Hyderabad" value="Hyderabad" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="donor-phone">Phone Number (SMS Alert Dispatch Node)</label>
+            <input type="tel" id="donor-phone" placeholder="e.g. +91 98765 43210" required>
+          </div>
+          <div class="form-group">
+            <label for="donor-email">Email Address</label>
+            <input type="email" id="donor-email" placeholder="e.g. donor@email.com" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px;">
+          Submit Donor Registration
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>CareCircle<span>AI</span></h3>
+        <p>Rewriting how the world finds blood with compassion, code, and community. AI-powered matching that prioritizes patient survival.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="request.html">Find Donors</a></li>
+          <li><a href="register.html">Register as Donor</a></li>
+          <li><a href="hoon-buddy.html">Hoon Buddy AI</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Locate</h4>
+        <ul>
+          <li><a href="map.html">Blood Bank Map</a></li>
+          <li><a href="admin.html">Admin Dashboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Mission</h4>
+        <ul>
+          <li><a href="https://supabase.com" target="_blank">Supabase DB</a></li>
+          <li><a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 CareCircle AI. All Rights Reserved. Built for global emergency response.</p>
+      <p>Secure connection verified with Supabase RLS</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="app.js?v=20260607f"></script>
+  <script>
+    // Set default max date to today (donors cannot select future donation dates)
+    const dateInput = document.getElementById('donor-last-donation');
+    if (dateInput) {
+      dateInput.max = new Date().toISOString().slice(0, 10);
+    }
+  </script>
+</body>
+</html>

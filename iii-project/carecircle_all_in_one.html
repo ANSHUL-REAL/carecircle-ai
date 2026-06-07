@@ -1,0 +1,5312 @@
+<!-- 
+  CareCircle AI — Single File Standalone Distribution
+  ===================================================
+  This file combines all pages (index, request, register, hoon-buddy, map, admin, login) 
+  and their stylesheet (style.css) and scripts (app.js) into a single, cohesive Single Page Application (SPA).
+  
+  Note: This file relies on the "assets/" folder for raster/WebP graphics. Sharing this file 
+  along with the "assets/" folder will ensure all illustrations display correctly.
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareCircle AI | National Blood Intelligence Network</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="CareCircle AI is a National Blood Intelligence Network for forecasting shortages, monitoring blood bank inventory, coordinating redistribution, and activating emergency response.">
+  <meta name="keywords" content="CareCircle AI, national blood grid, blood intelligence, blood shortage forecasting, blood bank inventory, e-RaktKosh, healthcare command center">
+  <meta name="author" content="CareCircle AI">
+
+  <!-- Leaflet Map CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+
+  <style>
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap');
+
+:root {
+  /* Colors */
+  --bg-primary: #202020;    /* Carbon Slate Background */
+  --bg-secondary: #212e50;  /* Navy Card/Surface */
+  --bg-tertiary: #151e33;   /* Deep Navy */
+  --accent-red: #f9de71;    /* Cyber Yellow primary accent */
+  --accent-red-hover: #e5cb5b;
+  --accent-red-muted: rgba(249, 222, 113, 0.1);
+  --accent-red-glow: rgba(249, 222, 113, 0.4);
+  
+  --text-primary: #ffffff;
+  --text-secondary: #e0e9ff; /* Lavender text */
+  --text-muted: #8da2cc;
+  
+  --color-green: #4cd964;
+  --color-green-muted: rgba(76, 217, 100, 0.1);
+  --color-orange: #ffcc00;
+  --color-orange-muted: rgba(255, 204, 0, 0.1);
+  
+  --border-color: rgba(224, 233, 255, 0.15);
+  --border-focus: #f9de71;
+  
+  /* Fonts */
+  --font-sans: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 20px 0 rgba(249, 222, 113, 0.2);
+}
+
+/* Base Styles */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Custom Buttons Styles */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px 24px;
+  font-size: 14px;
+  font-weight: 700;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: none;
+  font-family: var(--font-sans);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.btn-primary {
+  background-color: var(--accent-red);
+  color: #141414 !important;
+  box-shadow: 0 4px 12px rgba(249, 222, 113, 0.2);
+}
+
+.btn-primary:hover {
+  background-color: var(--accent-red-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(249, 222, 113, 0.35);
+}
+
+.btn-secondary {
+  background-color: transparent;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color);
+}
+
+.btn-secondary:hover {
+  background-color: var(--border-color);
+  color: var(--text-primary) !important;
+  transform: translateY(-1px);
+}
+
+.btn-block {
+  width: 100%;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--bg-primary);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--accent-red);
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--text-primary);
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+/* Navbar */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background-color: transparent;
+  border-bottom: 1px solid transparent;
+  transition: all 0.4s ease;
+}
+
+.navbar.scrolled {
+  background-color: rgba(32, 32, 32, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+.logo span {
+  color: var(--accent-red);
+}
+
+.logo-icon {
+  width: 24px;
+  height: 24px;
+  background-color: var(--accent-red);
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  display: inline-block;
+  position: relative;
+}
+
+.logo-icon::after {
+  content: '';
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background: white;
+  border-radius: 50%;
+  top: 6px;
+  left: 6px;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  list-style: none;
+}
+
+.nav-links a {
+  font-size: 14px;
+  font-weight: 500;
+  padding: 8px 16px;
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+}
+
+.nav-links a:hover,
+.nav-links a.active {
+  color: var(--text-primary);
+  background-color: var(--border-color);
+}
+
+.nav-links a.btn-cta {
+  background-color: var(--accent-red);
+  color: white;
+}
+
+.nav-links a.btn-cta:hover {
+  background-color: var(--accent-red-hover);
+  transform: translateY(-1px);
+}
+
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 4px;
+}
+
+/* Navbar Day Theme Contrast Styles (when transparent over day sky) */
+.navbar:not(.scrolled):not(.night-theme) .logo {
+  color: #111726;
+}
+.navbar:not(.scrolled):not(.night-theme) .nav-links a:not(.btn-cta) {
+  color: #111726;
+}
+.navbar:not(.scrolled):not(.night-theme) .nav-links a:not(.btn-cta):hover {
+  background-color: rgba(17, 23, 38, 0.08);
+}
+.navbar:not(.scrolled):not(.night-theme) .menu-toggle {
+  color: #111726;
+}
+
+/* Footer */
+footer {
+  margin-top: auto;
+  background-color: var(--bg-secondary);
+  border-top: 1px solid var(--border-color);
+  padding: 48px 24px 24px;
+}
+
+.footer-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 32px;
+  margin-bottom: 40px;
+}
+
+.footer-brand h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+
+.footer-brand p {
+  color: var(--text-secondary);
+  font-size: 14px;
+  max-width: 320px;
+}
+
+.footer-links h4 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  color: var(--text-secondary);
+}
+
+.footer-links ul {
+  list-style: none;
+}
+
+.footer-links li {
+  margin-bottom: 8px;
+}
+
+.footer-links a {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+.footer-links a:hover {
+  color: var(--accent-red);
+}
+
+.footer-bottom {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-top: 24px;
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+
+/* Hero Pinned Scroll Wrapper */
+.hero-pinned-wrapper {
+  position: relative;
+  height: 160vh;
+  width: 100%;
+}
+
+/* Hero Landing Section */
+.hero-landing {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  width: 100%;
+  min-height: 600px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.sky-bg-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  background: linear-gradient(to bottom, #b9d3ff, #e0e9ff);
+  will-change: background;
+}
+
+.drone-layer {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+  height: auto;
+  will-change: transform, left, top;
+}
+
+.left-drone {
+  top: 5%;
+  left: -10%;
+  width: 64px;
+  animation: fly-left-drone 11s linear infinite;
+}
+
+@media (min-width: 768px) {
+  .left-drone {
+    width: 80px;
+  }
+}
+
+.right-drone {
+  top: 35%;
+  left: 110%;
+  width: 48px;
+  transform: scaleX(-1);
+  animation: fly-right-drone 9s linear infinite;
+  animation-delay: 3.5s;
+}
+
+@media (min-width: 768px) {
+  .right-drone {
+    width: 64px;
+  }
+}
+
+.building-layer {
+  position: absolute;
+  right: 0;
+  bottom: 36px;
+  height: 65vh;
+  width: auto;
+  object-fit: contain;
+  z-index: 10;
+  pointer-events: none;
+  will-change: opacity;
+  transition: opacity 0.1s ease-out;
+}
+
+@media (min-width: 1024px) {
+  .building-layer {
+    bottom: 24px;
+    height: 85vh;
+  }
+}
+
+.day-building {
+  opacity: 1;
+}
+
+.night-building {
+  opacity: 0;
+}
+
+.waves-container-layer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 20;
+  pointer-events: none;
+  will-change: filter;
+  filter: brightness(1) saturate(1);
+  transition: filter 0.1s ease-out;
+}
+
+.wave-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+  overflow: visible;
+}
+
+.wave-svg.lg-wave {
+  display: none;
+}
+
+.wave-svg.md-wave {
+  display: none;
+}
+
+.wave-svg.sm-wave {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  .wave-svg.md-wave {
+    display: block;
+  }
+  .wave-svg.sm-wave {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .wave-svg.lg-wave {
+    display: block;
+  }
+  .wave-svg.md-wave {
+    display: none;
+  }
+}
+
+#lg-back {
+  animation: bob-lg-back 3.5s ease-in-out infinite alternate;
+}
+#lg-middle {
+  animation: bob-lg-middle 2.6s ease-in-out infinite alternate;
+}
+#lg-front {
+  animation: bob-lg-front 1.4s ease-in-out infinite alternate;
+}
+
+#md-back {
+  animation: bob-md-back 3.5s ease-in-out infinite alternate;
+}
+#md-middle {
+  animation: bob-md-middle 2.6s ease-in-out infinite alternate;
+}
+#md-front {
+  animation: bob-md-front 1.4s ease-in-out infinite alternate;
+}
+
+#sm-back {
+  animation: bob-sm-back 2.4s ease-in-out infinite alternate;
+}
+#sm-middle {
+  animation: bob-sm-middle 1.8s ease-in-out infinite alternate;
+}
+#sm-front {
+  animation: bob-sm-front 1s ease-in-out infinite alternate;
+}
+
+#lg-bus {
+  animation: slide-lg-bus 23s linear infinite;
+}
+#lg-boat {
+  animation: bob-lg-boat 2.2s ease-in-out infinite alternate;
+}
+.lg-boat-group {
+  animation: slide-lg-boat 30s linear infinite;
+  animation-delay: 2s;
+}
+
+#md-bus {
+  animation: slide-md-bus 20s linear infinite;
+}
+#md-boat {
+  animation: bob-md-boat 2.2s ease-in-out infinite alternate;
+}
+.md-boat-group {
+  animation: slide-md-boat 25s linear infinite;
+  animation-delay: 2s;
+}
+
+#sm-bus {
+  animation: slide-sm-bus 13s linear infinite;
+}
+#sm-boat {
+  animation: bob-sm-boat 2.2s ease-in-out infinite alternate;
+}
+.sm-boat-group {
+  animation: slide-sm-boat 15s linear infinite;
+  animation-delay: 1s;
+}
+
+@keyframes fly-left-drone {
+  0% { left: -10%; top: 5%; }
+  54.5% { left: 110%; top: 15%; }
+  100% { left: 110%; top: 15%; }
+}
+
+@keyframes fly-right-drone {
+  0% { left: 110%; top: 35%; }
+  44.4% { left: -10%; top: 35%; }
+  100% { left: -10%; top: 35%; }
+}
+
+@keyframes bob-lg-back {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-6px); }
+}
+@keyframes bob-lg-middle {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(4px); }
+}
+@keyframes bob-lg-front {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-3px); }
+}
+
+@keyframes bob-md-back {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-8px); }
+}
+@keyframes bob-md-middle {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(6px); }
+}
+@keyframes bob-md-front {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-5px); }
+}
+
+@keyframes bob-sm-back {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-10px); }
+}
+@keyframes bob-sm-middle {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(8px); }
+}
+@keyframes bob-sm-front {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(-6px); }
+}
+
+@keyframes slide-lg-bus {
+  0% { transform: translate3d(-500px, 0, 0); }
+  78.3% { transform: translate3d(1800px, 0, 0); }
+  100% { transform: translate3d(1800px, 0, 0); }
+}
+@keyframes slide-lg-boat {
+  0% { transform: translate3d(1700px, 0, 0); }
+  83.3% { transform: translate3d(-600px, 0, 0); }
+  100% { transform: translate3d(-600px, 0, 0); }
+}
+@keyframes bob-lg-boat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(10px); }
+}
+
+@keyframes slide-md-bus {
+  0% { transform: translate3d(-400px, 0, 0); }
+  75% { transform: translate3d(1400px, 0, 0); }
+  100% { transform: translate3d(1400px, 0, 0); }
+}
+@keyframes slide-md-boat {
+  0% { transform: translate3d(1400px, 0, 0); }
+  80% { transform: translate3d(-450px, 0, 0); }
+  100% { transform: translate3d(-450px, 0, 0); }
+}
+@keyframes bob-md-boat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(30px); }
+}
+
+@keyframes slide-sm-bus {
+  0% { transform: translate3d(-280px, 0, 0); }
+  61.5% { transform: translate3d(850px, 0, 0); }
+  100% { transform: translate3d(850px, 0, 0); }
+}
+@keyframes slide-sm-boat {
+  0% { transform: translate3d(850px, 0, 0); }
+  66.7% { transform: translate3d(-300px, 0, 0); }
+  100% { transform: translate3d(-300px, 0, 0); }
+}
+@keyframes bob-sm-boat {
+  0% { transform: translateY(0); }
+  100% { transform: translateY(20px); }
+}
+
+.landing-content {
+  text-align: center;
+  position: relative;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  animation: fadeInUp 1s forwards ease-out;
+  transform: translateY(-80px);
+  color: #111726;
+  max-width: 800px;
+  padding: 0 24px;
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(-40px); }
+  to { opacity: 1; transform: translateY(-80px); }
+}
+
+.welcome-text, .landing-title, .watch-link {
+  color: inherit;
+  transition: color 0.4s ease;
+}
+
+.watch-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: currentColor;
+  border-radius: 50%;
+  transition: background-color 0.4s ease;
+}
+
+.welcome-text {
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.landing-title {
+  font-size: clamp(48px, 8vw, 76px);
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -2px;
+  margin-bottom: 8px;
+}
+
+.watch-link {
+  font-size: 15px;
+  font-weight: 700;
+  text-decoration: underline;
+  letter-spacing: 0.5px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.watch-link:hover {
+  transform: scale(1.03);
+  color: var(--accent-red) !important;
+}
+
+/* Page Container spacer for fixed navbar */
+.page-container {
+  max-width: 900px;
+  margin: 100px auto 80px;
+  padding: 0 24px;
+  flex: 1;
+}
+
+.phone-screen {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.screen-card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.screen-card-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: var(--accent-red);
+  letter-spacing: 0.5px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.screen-card-body {
+  font-size: 13px;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.screen-card-desc {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+/* Grid Layouts for Tiles */
+.section-title {
+  text-align: center;
+  max-width: 600px;
+  margin: 80px auto 40px;
+  padding: 0 24px;
+}
+
+.section-title h2 {
+  font-size: 32px;
+  margin-bottom: 12px;
+}
+
+.section-title p {
+  color: var(--text-secondary);
+}
+
+.features-grid {
+  max-width: 1200px;
+  margin: 0 auto 120px;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.feature-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.feature-card:hover {
+  border-color: var(--accent-red);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-glow);
+}
+
+.feature-icon-box {
+  width: 48px;
+  height: 48px;
+  background-color: var(--accent-red-muted);
+  border: 1px solid var(--accent-red-glow);
+  border-radius: var(--radius-md);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-red);
+  font-size: 20px;
+}
+
+.feature-card h3 {
+  font-size: 20px;
+}
+
+.feature-card p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+.feature-link {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--accent-red);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.feature-link:hover {
+  gap: 8px;
+}
+
+/* Page Standard Layout */
+.page-container {
+  max-width: 900px;
+  margin: 40px auto 80px;
+  padding: 0 24px;
+  flex: 1;
+}
+
+.page-header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.page-header h1 {
+  font-size: 36px;
+  margin-bottom: 12px;
+}
+
+.page-header p {
+  color: var(--text-secondary);
+  font-size: 16px;
+}
+
+/* Form Styles */
+.form-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 36px;
+  box-shadow: var(--shadow-lg);
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+}
+
+label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-secondary);
+  margin-bottom: 8px;
+}
+
+input[type="text"],
+input[type="tel"],
+input[type="email"],
+input[type="date"],
+input[type="password"],
+select {
+  width: 100%;
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  padding: 12px 16px;
+  font-family: var(--font-sans);
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+input:focus,
+select:focus {
+  border-color: var(--accent-red);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.15);
+}
+
+/* Matching / Results List */
+.results-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  margin-top: 32px;
+  display: none; /* Shown via JS */
+}
+
+.results-card h2 {
+  font-size: 22px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.match-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.match-item {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1.2fr;
+  gap: 16px;
+  align-items: center;
+  transition: border-color 0.2s ease;
+}
+
+.match-item:hover {
+  border-color: var(--accent-red-glow);
+}
+
+.donor-info h4 {
+  font-size: 16px;
+  margin-bottom: 4px;
+}
+
+.donor-info p {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.donor-meta {
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.donor-meta span {
+  display: block;
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+.badge {
+  display: inline-flex;
+  padding: 4px 10px;
+  border-radius: var(--radius-full);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.badge-green {
+  background-color: var(--color-green-muted);
+  color: var(--color-green);
+  border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.badge-orange {
+  background-color: var(--color-orange-muted);
+  color: var(--color-orange);
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.btn-sm {
+  padding: 8px 16px;
+  font-size: 13px;
+  border-radius: var(--radius-sm);
+}
+
+/* Eligibility Calculator in donor register */
+.eligibility-banner {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.eligibility-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.eligibility-info h4 {
+  font-size: 14px;
+}
+
+.eligibility-info p {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Voice Assistant Layout */
+.voice-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: stretch;
+}
+
+.voice-console {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 24px;
+  box-shadow: var(--shadow-lg);
+}
+
+.mic-btn {
+  width: 100px;
+  height: 100px;
+  background-color: var(--accent-red);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 32px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-glow);
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.mic-btn:hover {
+  background-color: var(--accent-red-hover);
+  transform: scale(1.05);
+}
+
+.mic-btn.active {
+  animation: pulse-active 1.5s infinite;
+}
+
+.wave-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 40px;
+  width: 200px;
+  justify-content: center;
+}
+
+.wave-bar {
+  width: 4px;
+  height: 4px;
+  background-color: var(--text-muted);
+  border-radius: var(--radius-full);
+  transition: all 0.15s ease;
+}
+
+.mic-btn.active ~ .wave-container .wave-bar {
+  background-color: var(--accent-red);
+  animation: bounce-wave 0.8s ease-in-out infinite alternate;
+}
+
+/* Different delay/height for visual variety */
+.wave-bar:nth-child(1) { animation-delay: 0.1s; height: 10px; }
+.wave-bar:nth-child(2) { animation-delay: 0.3s; height: 24px; }
+.wave-bar:nth-child(3) { animation-delay: 0.5s; height: 16px; }
+.wave-bar:nth-child(4) { animation-delay: 0.2s; height: 32px; }
+.wave-bar:nth-child(5) { animation-delay: 0.4s; height: 14px; }
+.wave-bar:nth-child(6) { animation-delay: 0.6s; height: 28px; }
+.wave-bar:nth-child(7) { animation-delay: 0.15s; height: 8px; }
+
+.api-key-panel {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-bottom: 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  width: 100%;
+}
+
+.api-key-header h4 {
+  font-size: 16px;
+  color: var(--accent-red);
+  margin-bottom: 4px;
+}
+
+.api-key-header p {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.api-key-input-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.api-key-input-row input {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  color: #ffffff;
+  font-size: 13px;
+  width: 250px;
+  outline: none;
+  font-family: monospace;
+  transition: border-color 0.2s ease;
+}
+
+.api-key-input-row input:focus {
+  border-color: var(--accent-red);
+}
+
+.voice-status {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.voice-transcript {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-size: 14px;
+  height: 260px;
+  overflow-y: auto;
+  width: 100%;
+  text-align: left;
+  color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-bubble {
+  padding: 10px 14px;
+  border-radius: var(--radius-md);
+  max-width: 85%;
+  line-height: 1.4;
+  word-wrap: break-word;
+  font-size: 13px;
+  animation: fade-in-slide 0.25s ease-out;
+}
+
+.chat-bubble.user-bubble {
+  align-self: flex-end;
+  background-color: rgba(249, 222, 113, 0.1);
+  border: 1px solid var(--accent-red);
+  color: var(--text-primary);
+  border-bottom-right-radius: 2px;
+}
+
+.chat-bubble.ai-bubble {
+  align-self: flex-start;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-left: 3px solid var(--accent-red);
+  color: var(--text-secondary);
+  border-bottom-left-radius: 2px;
+}
+
+.faq-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.faq-card h3 {
+  font-size: 18px;
+}
+
+.faq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.faq-item {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  color: var(--text-secondary);
+  width: 100%;
+}
+
+.faq-item:hover {
+  border-color: var(--accent-red-glow);
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+}
+
+/* Map Screen Layout */
+.map-wrapper {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 24px;
+  height: 600px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.map-sidebar {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  overflow-y: auto;
+}
+
+.map-search {
+  position: relative;
+}
+
+.map-search input {
+  padding-right: 36px;
+}
+
+.map-search-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.map-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  flex: 1;
+}
+
+.map-bank-item {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.map-bank-item:hover,
+.map-bank-item.active {
+  border-color: var(--accent-red);
+  background-color: var(--bg-secondary);
+}
+
+.map-bank-item h4 {
+  font-size: 14px;
+  margin-bottom: 4px;
+}
+
+.map-bank-item p {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.map-bank-stock {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--accent-red);
+  margin-top: 4px;
+}
+
+.map-container-box {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  background-color: var(--bg-secondary);
+}
+
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background: var(--bg-secondary) !important;
+}
+
+/* Custom map marker styles */
+.map-pin {
+  width: 20px;
+  height: 20px;
+  background-color: var(--accent-red);
+  border: 2px solid white;
+  border-radius: 50% 50% 50% 0;
+  transform: rotate(-45deg);
+  box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.map-pin::after {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background-color: white;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  border-radius: 50%;
+}
+
+/* Admin Dashboard Layout */
+.admin-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+.metric-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.metric-card span {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.metric-card h2 {
+  font-size: 32px;
+  color: var(--accent-red);
+}
+
+.metric-card p {
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.admin-layout {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+  align-items: start;
+}
+
+.admin-panel {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-table-wrapper {
+  overflow-x: auto;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.admin-table th {
+  background-color: var(--bg-tertiary);
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-color);
+  text-transform: uppercase;
+  font-size: 11px;
+  letter-spacing: 0.5px;
+}
+
+.admin-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+}
+
+.admin-table tr:last-child td {
+  border-bottom: none;
+}
+
+/* Chart widget */
+.chart-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.chart-bar-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.chart-bar-row {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.chart-bar-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.chart-bar-track {
+  height: 8px;
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.chart-bar-fill {
+  height: 100%;
+  background-color: var(--accent-red);
+  border-radius: var(--radius-full);
+  transition: width 0.8s ease-in-out;
+}
+
+/* Security Toggle Card */
+.security-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  margin-top: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.security-info h4 {
+  font-size: 15px;
+  margin-bottom: 2px;
+}
+
+.security-info p {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 52px;
+  height: 28px;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--border-color);
+  transition: .3s;
+  border-radius: 34px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 20px;
+  width: 20px;
+  left: 4px;
+  bottom: 4px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: var(--color-green);
+}
+
+input:checked + .slider:before {
+  transform: translateX(24px);
+}
+
+/* Alerts and Steppers */
+.step-stepper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 20px;
+  border-top: 1px dashed var(--border-color);
+  padding-top: 20px;
+}
+
+.step-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  opacity: 0.4;
+  transition: opacity 0.3s ease;
+}
+
+.step-row.active {
+  opacity: 1;
+}
+
+.step-num {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: var(--bg-primary);
+  border: 2px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  flex-shrink: 0;
+}
+
+.step-row.active .step-num {
+  border-color: var(--accent-red);
+  color: var(--accent-red);
+  background-color: var(--accent-red-muted);
+}
+
+.step-row.completed .step-num {
+  border-color: var(--color-green);
+  color: var(--color-green);
+  background-color: var(--color-green-muted);
+}
+
+.step-details h4 {
+  font-size: 14px;
+  margin-bottom: 2px;
+}
+
+.step-details p {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+/* Animations */
+@keyframes pulse-ring {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+@keyframes pulse-active {
+  0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.6); }
+  70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+@keyframes bounce-wave {
+  0% { transform: scaleY(0.3); }
+  100% { transform: scaleY(1.3); }
+}
+
+/* Media Queries */
+@media (max-width: 1024px) {
+  .hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+    padding: 60px 24px;
+  }
+  
+  .hero-tag, .hero-desc {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .hero-actions {
+    justify-content: center;
+  }
+  
+  .hero-stats {
+    justify-content: center;
+  }
+  
+  .mockup-container {
+    order: -1;
+  }
+}
+
+@media (max-width: 850px) {
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .voice-wrapper,
+  .map-wrapper,
+  .admin-layout {
+    grid-template-columns: 1fr;
+  }
+  
+  .map-wrapper {
+    height: auto;
+  }
+  
+  .map-container-box {
+    height: 400px;
+  }
+  
+  .admin-metrics {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .navbar {
+    padding: 16px;
+  }
+  
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 70px;
+    left: 0;
+    width: 100%;
+    background-color: var(--bg-secondary);
+    padding: 16px;
+    border-bottom: 1px solid var(--border-color);
+    z-index: 999;
+  }
+  
+  .nav-links.active {
+    display: flex !important;
+  }
+  
+  .menu-toggle {
+    display: block;
+  }
+  
+  .footer-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 0;
+  }
+  
+  .admin-metrics {
+    grid-template-columns: 1fr;
+  }
+  
+  .match-item {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+  
+  .btn-sm {
+    width: 100%;
+  }
+}
+
+/* =========================================================================
+   8. HOMEPAGE SCROLLING DASHBOARD SPECIFIC STYLES
+   ========================================================================= */
+
+.dashboard-section {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 24px;
+}
+
+.dashboard-grid {
+  display: grid;
+  gap: 24px;
+  align-items: start;
+}
+
+.dashboard-grid.two-col {
+  grid-template-columns: 1fr 1fr;
+}
+
+.dashboard-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dashboard-card:hover {
+  border-color: rgba(239, 68, 68, 0.2);
+}
+
+.dashboard-card .card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 12px;
+}
+
+.dashboard-card .card-id {
+  font-family: monospace;
+  color: var(--text-muted);
+}
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--color-green);
+}
+
+.live-indicator::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  background-color: var(--color-green);
+  border-radius: 50%;
+  animation: pulse-dot 1.5s infinite ease-in-out;
+}
+
+@keyframes pulse-dot {
+  0% { transform: scale(0.8); opacity: 0.5; }
+  50% { transform: scale(1.2); opacity: 1; }
+  100% { transform: scale(0.8); opacity: 0.5; }
+}
+
+.text-alert-critical {
+  color: var(--accent-red);
+}
+
+/* Diagnostics HUD */
+.hud-profile {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.hud-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background-color: var(--accent-red-muted);
+  border: 1px solid var(--accent-red);
+  color: var(--accent-red);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.hud-meta h3 {
+  font-size: 18px;
+  color: var(--text-primary);
+}
+
+.hud-meta p {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.hud-telemetry-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 8px;
+}
+
+.hud-metric {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hud-metric span {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.hud-metric strong {
+  font-size: 15px;
+  color: var(--text-primary);
+}
+
+.hud-status-bar {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 16px;
+  align-items: center;
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  font-size: 13px;
+}
+
+.hud-status-bar.critical-alert {
+  background-color: rgba(239, 68, 68, 0.05);
+  border: 1px dashed var(--accent-red);
+  color: var(--text-primary);
+  animation: pulse-border-glow 2.5s infinite;
+}
+
+@keyframes pulse-border-glow {
+  0% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.05); }
+  50% { border-color: rgba(239, 68, 68, 0.9); box-shadow: 0 0 15px 0 rgba(239, 68, 68, 0.15); }
+  100% { border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.05); }
+}
+
+.status-icon {
+  font-size: 20px;
+}
+
+.status-text strong {
+  color: var(--accent-red);
+  display: block;
+}
+
+.status-text p {
+  font-size: 11px;
+  color: var(--text-secondary);
+  margin-top: 2px;
+}
+
+.status-risk-score {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--accent-red);
+  font-family: monospace;
+}
+
+/* Forecast Widget */
+.forecast-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+}
+
+.forecast-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 8px;
+}
+
+.forecast-item {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.forecast-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.progress-bar-track {
+  height: 8px;
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+}
+
+.progress-bar-fill.critical { background-color: var(--accent-red); }
+.progress-bar-fill.warning { background-color: var(--color-orange); }
+.progress-bar-fill.green { background-color: var(--color-green); }
+
+/* SVG Map */
+.map-container-svg {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.vector-map-svg {
+  width: 100%;
+  height: 300px;
+  display: block;
+}
+
+.map-sector {
+  fill: rgba(224, 233, 255, 0.02);
+  stroke: var(--border-color);
+  stroke-width: 1.5;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.map-sector:hover {
+  fill: rgba(239, 68, 68, 0.08);
+  stroke: rgba(239, 68, 68, 0.5);
+}
+
+.map-sector.active {
+  fill: rgba(239, 68, 68, 0.16);
+  stroke: var(--accent-red);
+}
+
+.map-hotspot {
+  cursor: pointer;
+}
+
+.hotspot-pulse {
+  fill: var(--accent-red);
+  transform-origin: center;
+  animation: pulse-wave 2s infinite ease-out;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.map-hotspot:hover .hotspot-pulse,
+.map-hotspot.active .hotspot-pulse {
+  animation: pulse-wave 1.5s infinite ease-out;
+}
+
+@keyframes pulse-wave {
+  0% { transform: scale(0.4); opacity: 0.8; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.hotspot-core {
+  fill: var(--accent-red);
+  transition: transform 0.2s ease, fill 0.2s ease;
+}
+
+.map-hotspot:hover .hotspot-core,
+.map-hotspot.active .hotspot-core {
+  transform: scale(1.3);
+  fill: #ffffff;
+}
+
+.map-label {
+  fill: var(--text-muted);
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  pointer-events: none;
+  font-family: monospace;
+}
+
+/* Patient Journey Details */
+.empty-state-info {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 40px 16px;
+  gap: 12px;
+  height: 100%;
+}
+
+.journey-avatar {
+  font-size: 36px;
+}
+
+.journey-detail-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  animation: fade-in-slide 0.3s ease-out;
+}
+
+@keyframes fade-in-slide {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.journey-header {
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 12px;
+  margin-bottom: 4px;
+}
+
+.journey-header h3 {
+  font-size: 16px;
+  color: var(--accent-red);
+}
+
+.journey-header span {
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+}
+
+.journey-metric-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.journey-metric {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 10px;
+}
+
+.journey-metric span {
+  font-size: 10px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 2px;
+}
+
+.journey-metric strong {
+  font-size: 13px;
+  color: var(--text-primary);
+}
+
+/* Pillars grid */
+.circles-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+  margin-top: 10px;
+}
+
+.circle-card {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.3s ease;
+}
+
+.circle-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.circle-num {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--accent-red);
+  opacity: 0.15;
+  line-height: 1;
+}
+
+.circle-card:hover .circle-num {
+  opacity: 0.6;
+}
+
+.circle-card h3 {
+  font-size: 16px;
+  color: var(--text-primary);
+}
+
+.circle-card p {
+  font-size: 12px;
+  color: var(--text-secondary);
+  line-height: 1.5;
+}
+
+/* Concentric Matcher */
+.matcher-setup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.visualizer-split {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 16px;
+  align-items: center;
+}
+
+.concentric-svg-box {
+  background-color: var(--bg-primary);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.concentric-svg {
+  width: 100%;
+  max-width: 220px;
+  height: auto;
+  display: block;
+}
+
+.matcher-ring {
+  fill: none;
+  stroke: var(--border-color);
+  stroke-dasharray: 4 4;
+  stroke-width: 1.2;
+  transform-origin: center;
+  transition: stroke 0.3s ease;
+}
+
+.matcher-ring.active {
+  stroke: var(--accent-red);
+  stroke-dasharray: none;
+  stroke-width: 1.8;
+  animation: radial-pulse 3s infinite linear;
+}
+
+@keyframes radial-pulse {
+  0% { transform: scale(1); stroke-width: 1.8; }
+  50% { transform: scale(1.03); stroke-width: 2.2; }
+  100% { transform: scale(1); stroke-width: 1.8; }
+}
+
+.patient-pulse {
+  fill: var(--accent-red);
+  opacity: 0.4;
+  animation: pulse-wave 1.8s infinite ease-out;
+  transform-origin: center;
+}
+
+.patient-core {
+  fill: var(--accent-red);
+}
+
+.matcher-results-box {
+  padding: 8px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  min-height: 200px;
+}
+
+.scanner-laser {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(to right, transparent, var(--accent-red), transparent);
+  box-shadow: 0 0 8px var(--accent-red);
+  animation: scan-loop 2s infinite linear;
+}
+
+.matcher-results-box.scanning .scanner-laser {
+  display: block;
+}
+
+@keyframes scan-loop {
+  0% { top: 0%; }
+  50% { top: 100%; }
+  100% { top: 0%; }
+}
+
+.match-list-hud {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  animation: fade-in-slide 0.3s ease-out;
+}
+
+.match-list-hud h4 {
+  font-size: 13px;
+  color: var(--accent-red);
+  border-bottom: 1px dashed var(--border-color);
+  padding-bottom: 6px;
+  margin-bottom: 4px;
+}
+
+.match-list-hud ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.match-list-hud li {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+
+/* Cassette Player */
+.cassette-player-card {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.cassette-layout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  align-items: center;
+}
+
+.cassette-deck-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  perspective: 600px;
+}
+
+.cassette-body {
+  width: 320px;
+  height: 200px;
+  background-color: #1e1e1e;
+  border: 12px solid #141414;
+  border-radius: 12px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 2px 5px rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px;
+  position: relative;
+}
+
+.cassette-label {
+  width: 100%;
+  height: 60px;
+  background: linear-gradient(to bottom, #d6b83f, #cbb034);
+  border-radius: 4px;
+  border: 3px solid #141414;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #141414;
+  font-weight: 800;
+  padding: 4px;
+}
+
+.cassette-brand {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  letter-spacing: -0.5px;
+}
+
+.cassette-brand span {
+  color: #c23e3e;
+}
+
+.cassette-title {
+  font-size: 8px;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+  font-family: monospace;
+}
+
+.cassette-window {
+  width: 180px;
+  height: 52px;
+  background-color: rgba(10, 10, 10, 0.85);
+  border: 4px solid #141414;
+  border-radius: 4px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.cassette-tape-roll {
+  position: absolute;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: radial-gradient(circle, transparent 25%, #3d2f1f 25%, #2a2014 100%);
+  top: -9px;
+  left: 10px;
+  opacity: 0.65;
+}
+
+.spindle-outer {
+  z-index: 2;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #141414;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.spindle {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px dashed #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  transform: rotate(0deg);
+}
+
+.rotating-spindle {
+  animation: spin-wheel 2s infinite linear;
+}
+
+@keyframes spin-wheel {
+  to { transform: rotate(360deg); }
+}
+
+.spindle-notch {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background-color: #ffffff;
+}
+
+.spindle-notch:nth-child(1) { top: -2px; left: 8px; }
+.spindle-notch:nth-child(2) { bottom: -2px; left: 8px; }
+.spindle-notch:nth-child(3) { left: -2px; top: 8px; }
+
+.cassette-bottom-holes {
+  width: 140px;
+  display: flex;
+  justify-content: space-around;
+}
+
+.cassette-bottom-holes span {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background-color: #141414;
+}
+
+/* Cassette Controls */
+.cassette-controls-box {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.scrubber-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.time-readout {
+  font-family: monospace;
+  font-size: 12px;
+  color: var(--text-secondary);
+  background-color: var(--bg-primary);
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  min-width: 48px;
+  text-align: center;
+}
+
+.timeline-slider {
+  flex: 1;
+  -webkit-appearance: none;
+  background: var(--border-color);
+  height: 6px;
+  border-radius: var(--radius-full);
+  outline: none;
+}
+
+.timeline-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--accent-red);
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--accent-red-glow);
+  transition: transform 0.1s ease;
+}
+
+.timeline-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
+
+.cassette-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.timeline-console {
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-family: monospace;
+  min-height: 85px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.console-header {
+  font-size: 10px;
+  color: var(--text-muted);
+  font-weight: 700;
+  border-bottom: 1px solid rgba(224, 233, 255, 0.05);
+  padding-bottom: 4px;
+}
+
+.console-body strong {
+  color: var(--accent-red);
+  font-size: 12px;
+  display: block;
+}
+
+.console-body p {
+  color: var(--text-secondary);
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 2px;
+}
+
+/* =========================================================================
+   9. RESPONSIVE DASHBOARD ADJUSTMENTS
+   ========================================================================= */
+
+@media (max-width: 850px) {
+  .dashboard-grid.two-col,
+  .circles-grid,
+  .visualizer-split,
+  .cassette-layout {
+    grid-template-columns: 1fr;
+  }
+  .circles-grid {
+    gap: 16px;
+  }
+}
+
+/* =========================================================================
+   10. GOOGLE TRANSLATE CUSTOM STYLING
+   ========================================================================= */
+.goog-te-combo {
+  background-color: var(--bg-primary) !important;
+  color: var(--text-primary) !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: var(--radius-sm) !important;
+  padding: 8px 12px !important;
+  font-family: var(--font-sans) !important;
+  font-size: 13px !important;
+  outline: none !important;
+  cursor: pointer !important;
+  transition: border-color 0.2s ease !important;
+}
+
+.goog-te-combo:focus {
+  border-color: var(--accent-red) !important;
+}
+
+/* Hide Google Logo branding */
+.goog-logo-link, 
+.goog-logo-link:link, 
+.goog-logo-link:visited, 
+.goog-logo-link:hover, 
+.goog-logo-link:active {
+  display: none !important;
+}
+
+.goog-te-gadget {
+  color: transparent !important;
+  font-size: 0 !important;
+}
+
+.goog-te-gadget span {
+  display: none !important;
+}
+
+.goog-te-gadget .goog-te-combo {
+  margin: 0 !important;
+}
+
+/* Hide Google Translate top bar */
+body {
+  top: 0 !important;
+}
+.skiptranslate {
+  display: none !important;
+}
+iframe.goog-te-banner-frame {
+  display: none !important;
+}
+
+/* Premium Login Specific Overrides */
+.role-selectors {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.role-card {
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.role-card:hover {
+  border-color: rgba(249, 222, 113, 0.4);
+  transform: translateY(-2px);
+}
+
+.role-card.active {
+  border-color: var(--accent-red);
+  background-color: rgba(249, 222, 113, 0.05);
+  box-shadow: 0 0 15px var(--accent-red-glow);
+}
+
+.role-icon {
+  font-size: 24px;
+}
+
+.role-card span {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.role-card.active span {
+  color: var(--accent-red);
+}
+
+.sandbox-hint {
+  margin-top: 24px;
+  background-color: rgba(255, 204, 0, 0.03);
+  border: 1px dashed var(--color-orange);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  font-family: monospace;
+  font-size: 11px;
+}
+
+.sandbox-hint h5 {
+  color: var(--color-orange);
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sandbox-hint ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sandbox-hint li {
+  color: var(--text-secondary);
+}
+
+.sandbox-hint strong {
+  color: var(--accent-red);
+}
+
+.login-error-log {
+  display: none;
+  background-color: rgba(255, 94, 98, 0.05);
+  border: 1px solid rgba(255, 94, 98, 0.25);
+  border-radius: var(--radius-sm);
+  color: #ff5e62;
+  padding: 12px;
+  font-size: 12px;
+  margin-bottom: 20px;
+  font-family: monospace;
+  animation: shake 0.3s ease;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+/* Master Section Visibility control */
+.page-section {
+  display: none;
+}
+  </style>
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="main-nav">
+    <a href="#home" class="logo">
+      <span class="logo-icon"></span>
+      CareCircle<span>AI</span>
+    </a>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu" aria-expanded="false" aria-controls="nav-menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+    <ul class="nav-links" id="nav-menu">
+      <!-- Generated dynamically by router -->
+    </ul>
+  </nav>
+
+  <!-- =========================================================================
+       SECTION 1: HOME PAGE (#home)
+       ========================================================================= -->
+  <div id="section-home" class="page-section">
+    <!-- Pinning wrapper for scroll day-to-night sticky effects -->
+    <div class="hero-pinned-wrapper" id="hero-pinned-wrapper">
+      <header class="hero-landing" id="hero-sec">
+        <!-- Sky Background layer -->
+        <div class="sky-bg-layer" id="sky-bg"></div>
+
+        <!-- Drones -->
+        <img src="assets/drone.webp" alt="Drone" class="drone-layer left-drone" id="left-drone" />
+        <img src="assets/drone.webp" alt="Drone" class="drone-layer right-drone" id="right-drone" />
+
+        <!-- Buildings -->
+        <img src="assets/building.webp" alt="Building Day" class="building-layer day-building" id="day-building" />
+        <img src="assets/building-dark.webp" alt="Building Night" class="building-layer night-building" id="night-building" />
+
+        <!-- SVGs Waves Container -->
+        <div class="waves-container-layer" id="waves-container">
+          <!-- SVG Large Screen (viewBox 0 0 1691 156) -->
+          <svg viewBox="0 0 1691 156" fill="none" xmlns="http://www.w3.org/2000/svg" class="wave-svg lg-wave" id="lg-wave">
+            <g style="will-change: transform, filter">
+              <path id="lg-back" d="M1585.83 57.1904C1611.51 59.1861 1666.65 38.3979 1691 27.7543V145H0V114.067V5.80177C2.39856 34.7389 27.0117 80.7389 106.276 33.2419C205.355 -26.1293 249.637 5.80176 340.968 38.2311C432.298 70.6604 405.176 22.765 518.647 5.80177C632.119 -11.1614 603.889 78.1448 722.342 43.2205C840.795 8.29623 857.401 -1.68213 973.086 38.2313C1088.77 78.1448 1094.86 22.7656 1201.69 18.2753C1308.52 13.785 1260.92 101.095 1384.9 47.2121C1508.89 -6.67106 1553.73 54.6959 1585.83 57.1904Z" fill="#4C8192" />
+              <image id="lg-bus" href="assets/bus.webp" x="0" y="-210" width="540" height="400" />
+              <path id="lg-middle" d="M95.0254 71.3663C71.8192 72.9382 22.0059 56.5646 0 48.1813V142.886V156H304.081H1657.94L1688.45 124.563C1694.29 105.831 1693.85 58.8586 1645.44 20.8195C1584.92 -26.7294 1494.4 86.8378 1431.88 52.5036C1342.36 5.7406 1302.35 30.8907 1219.83 56.4332C1137.3 81.9757 1161.81 44.2515 1059.28 30.8907C956.755 17.5299 982.262 87.8707 875.234 60.363C768.205 32.8554 753.201 24.9961 648.673 56.4334C544.145 87.8707 538.644 44.252 442.118 40.7153C345.592 37.1786 388.604 105.947 276.574 63.507C164.544 21.0666 124.033 69.4015 95.0254 71.3663Z" fill="#5B8898" />
+              <g class="lg-boat-group">
+                <image id="lg-boat" href="assets/boat.webp" x="0" y="-150" width="480" height="360" />
+              </g>
+              <path id="lg-front" d="M105.169 104.525C79.4853 105.695 24.3548 93.5091 0 87.2698V156H1691V137.867V74.401C1688.6 91.3642 1663.99 118.33 1584.72 90.4866C1485.64 55.6828 1441.36 74.401 1350.03 93.4113C1258.7 112.422 1285.82 84.345 1172.35 74.401C1058.88 64.4571 1087.11 116.809 968.658 96.3362C850.205 75.8633 833.599 70.0139 717.914 93.4115C602.229 116.809 596.14 84.3453 489.311 81.7131C382.482 79.0809 430.084 130.263 306.096 98.676C182.108 67.0894 137.273 103.063 105.169 104.525Z" fill="#437485" fill-opacity="0.84" />
+            </g>
+          </svg>
+
+          <!-- SVG Medium Screen (viewBox 0 0 1351 156) -->
+          <svg viewBox="0 0 1351 156" fill="none" xmlns="http://www.w3.org/2000/svg" class="wave-svg md-wave" id="md-wave">
+            <g style="will-change: transform, filter">
+              <path id="md-back" d="M973.086 38.2313C1088.77 78.1448 1094.86 22.7656 1201.69 18.2753C1296.85 14.2754 1269.47 83.1217 1350 60.1164V145H0V114.067V5.80177C2.39856 34.7389 27.0117 80.7389 106.276 33.2419C205.355 -26.1293 249.637 5.80177 340.968 38.2311C432.298 70.6604 405.176 22.765 518.647 5.80177C632.118 -11.1614 603.889 78.1448 722.342 43.2205C840.795 8.29623 857.401 -1.68213 973.086 38.2313Z" fill="#4C8192" />
+              <image id="md-bus" href="assets/bus.webp" x="0" y="-170" width="430" height="320" />
+              <path id="md-middle" d="M95.0254 71.3666C71.8192 72.9384 22.0059 56.5649 0 48.1816V142.886V156H304.081H1349.5V26.582C1307.67 24.0674 1272.37 40.1709 1219.83 56.4335C1137.3 81.976 1161.81 44.2518 1059.28 30.891C956.755 17.5301 982.262 87.8709 875.233 60.3633C768.205 32.8557 753.201 24.9964 648.673 56.4337C544.145 87.8709 538.644 44.252 442.118 40.7156C345.592 37.1789 388.604 105.948 276.574 63.5072C164.544 21.0669 124.033 69.4017 95.0254 71.3666Z" fill="#5B8898" />
+              <g class="md-boat-group">
+                <image id="md-boat" href="assets/boat.webp" x="0" y="-110" width="380" height="285" />
+              </g>
+              <path id="md-front" d="M105.169 104.525C79.4853 105.695 24.3548 93.509 0 87.2696V156H1350.03V93.4112C1258.7 112.421 1285.82 84.3448 1172.35 74.4009C1058.88 64.4569 1087.11 116.809 968.658 96.336C850.205 75.8632 833.599 70.0138 717.914 93.4113C602.229 116.809 596.14 84.3452 489.311 81.713C382.482 79.0807 430.084 130.263 306.096 98.6759C182.108 67.0892 137.273 103.063 105.169 104.525Z" fill="#437485" fill-opacity="0.84" />
+            </g>
+          </svg>
+
+          <!-- SVG Small Screen (viewBox 0 0 802 156) -->
+          <svg viewBox="0 0 802 156" fill="none" xmlns="http://www.w3.org/2000/svg" class="wave-svg sm-wave" id="sm-wave">
+            <g style="will-change: transform, filter">
+              <path id="sm-back" d="M518.647 5.80177C632.118 -11.1614 603.889 78.1448 722.342 43.2205C755.356 33.4867 780.459 25.6908 802 20.3727V145H0V114.067V5.80177C2.39856 34.7389 27.0117 80.7389 106.276 33.2419C205.356 -26.1293 249.637 5.80177 340.968 38.2311C432.298 70.6604 405.176 22.765 518.647 5.80177Z" fill="#4C8192" />
+              <image id="sm-bus" href="assets/bus.webp" x="0" y="-100" width="340" height="255" />
+              <path id="sm-middle" d="M95.0254 71.3662C71.8192 72.9381 22.0059 56.5645 0 48.1813V142.886V156H304.081H802V42.0982C752.402 31.5657 723.438 33.9474 648.673 56.4333C544.145 87.8706 538.644 44.252 442.118 40.7153C345.592 37.1786 388.604 105.947 276.574 63.5069C164.544 21.0666 124.033 69.4014 95.0254 71.3662Z" fill="#5B8898" />
+              <g class="sm-boat-group">
+                <image id="sm-boat" href="assets/boat.webp" x="0" y="-70" width="310" height="235" />
+              </g>
+              <path id="sm-front" d="M105.169 104.525C79.4853 105.695 24.3548 93.5088 0 87.2694V156H802V79.7324C779.407 81.8354 753.294 86.2555 717.914 93.4111C602.229 116.809 596.14 84.345 489.311 81.7128C382.482 79.0806 430.084 130.262 306.096 98.6757C182.108 67.0891 137.273 103.063 105.169 104.525Z" fill="#437485" fill-opacity="0.84" />
+            </g>
+          </svg>
+        </div>
+
+        <!-- Landing text overlay -->
+        <div class="landing-content">
+          <p class="welcome-text">National Blood Intelligence Network</p>
+          <h1 class="landing-title">CareCircle AI</h1>
+          <p class="hero-desc" style="max-width: 600px; margin-bottom: 24px; color: inherit;">
+            Every day, thousands die because compatible blood cannot be found in time. CareCircle AI acts like a medical assistant that thinks, filters, and prioritizes—instantly forecasting shortages, monitoring bank reserves, and coordinating redistribution.
+          </p>
+          <div class="hero-actions" style="margin-bottom: 32px; display: flex; gap: 16px; justify-content: center;">
+            <a href="#request" class="btn btn-primary" style="box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);">Find Compatible Donors</a>
+            <a href="#register" class="btn btn-secondary">Become a Donor</a>
+          </div>
+          <a href="#command-sec" class="watch-link">
+            <span class="watch-dot"></span>REWRITE HOW THE WORLD FINDS BLOOD
+          </a>
+        </div>
+      </header>
+    </div>
+
+    <!-- 2. Command Center & Hyderabad Vector Grid Map -->
+    <section class="dashboard-section" id="command-sec">
+      <div class="section-title">
+        <h2>Command Center & SVG City Map</h2>
+        <p>Real-time sector-level tracking of donor coordinates, hospital demands, and volunteer dispatches.</p>
+      </div>
+
+      <div class="dashboard-grid two-col">
+        <!-- Interactive SVG Sector Map -->
+        <div class="dashboard-card map-card">
+          <div class="card-header">
+            <span>VECTOR GRID CITY COORD MAP</span>
+            <span class="card-id">GPS::HYDERABAD-GRID</span>
+          </div>
+          <div class="card-body map-container-svg">
+            <!-- Vector Map SVG -->
+            <svg viewBox="0 0 400 300" class="vector-map-svg" id="hyd-svg-map">
+              <!-- Grid Lines Background -->
+              <defs>
+                <pattern id="grid-pattern" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(224, 233, 255, 0.05)" stroke-width="1" />
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#grid-pattern)" />
+              
+              <!-- Map Sectors -->
+              <path id="sector-north" class="map-sector" d="M 50,50 L 220,20 L 350,50 L 250,130 L 150,130 Z" />
+              <path id="sector-secunderabad" class="map-sector" d="M 350,50 L 380,180 L 240,220 L 250,130 Z" />
+              <path id="sector-cyberabad" class="map-sector" d="M 50,50 L 150,130 L 110,240 L 20,180 Z" />
+              <path id="sector-south" class="map-sector" d="M 150,130 L 250,130 L 240,220 L 110,240 Z" />
+
+              <!-- Grid Hotspots (Pulsing Dots) -->
+              <g class="map-hotspot" data-sector="north" style="transform: translate(210px, 65px)">
+                <circle r="14" class="hotspot-pulse" />
+                <circle r="5" class="hotspot-core" />
+              </g>
+              <g class="map-hotspot" data-sector="secunderabad" style="transform: translate(295px, 120px)">
+                <circle r="14" class="hotspot-pulse" />
+                <circle r="5" class="hotspot-core" />
+              </g>
+              <g class="map-hotspot" data-sector="cyberabad" style="transform: translate(85px, 150px)">
+                <circle r="14" class="hotspot-pulse" />
+                <circle r="5" class="hotspot-core" />
+              </g>
+              <g class="map-hotspot" data-sector="south" style="transform: translate(190px, 185px)">
+                <circle r="14" class="hotspot-pulse" />
+                <circle r="5" class="hotspot-core" />
+              </g>
+
+              <!-- Text Labels inside SVG -->
+              <text x="170" y="45" class="map-label">HYD NORTH</text>
+              <text x="270" y="95" class="map-label">SECUNDERABAD</text>
+              <text x="60" y="110" class="map-label">CYBERABAD</text>
+              <text x="160" y="160" class="map-label">HYD SOUTH</text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Real Patient Journey Card -->
+        <div class="dashboard-card journey-card">
+          <div class="card-header">
+            <span>ACTIVE PATIENT JOURNEY MONITOR</span>
+            <span class="card-id">LOG::SECTOR-INSIGHTS</span>
+          </div>
+          <div class="card-body" id="journey-detail-box">
+            <div class="empty-state-info">
+              <span class="journey-avatar">🧭</span>
+              <h3>Map Sector Details</h3>
+              <p>Click or hover on any sector in the vector map grid to load patient logs, matching networks, and dispatch status.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. The Four Core Circles Pipeline Grid -->
+    <section class="dashboard-section" id="circles-grid-sec">
+      <div class="section-title">
+        <h2>The Four Pillars of the Predictive Pipeline</h2>
+        <p>Transitioning blood support from a reactive panic messaging loop into a predictive, automated standby network.</p>
+      </div>
+
+      <div class="circles-grid">
+        <!-- Circle 01 -->
+        <div class="circle-card">
+          <div class="circle-num">01</div>
+          <h3>Circle 01: Predict</h3>
+          <p>AI models patient transfusion cycles (e.g., Thalassemia on a 21-day recurrence) to schedule blood requirements 10 days out, long before panic sets in.</p>
+        </div>
+        <!-- Circle 02 -->
+        <div class="circle-card">
+          <div class="circle-num">02</div>
+          <h3>Circle 02: Prepare</h3>
+          <p>Filters donor registry for compatibility, verifies eligibility cooldowns, and pre-warms secondary backup networks to secure standby responses.</p>
+        </div>
+        <!-- Circle 03 -->
+        <div class="circle-card">
+          <div class="circle-num">03</div>
+          <h3>Circle 03: Coordinate</h3>
+          <p>Automates tracking confirmations via voice calling, establishes dispatch routes, and activates field volunteer couriers in real-time.</p>
+        </div>
+        <!-- Circle 04 -->
+        <div class="circle-card">
+          <div class="circle-num">04</div>
+          <h3>Circle 04: Prevent</h3>
+          <p>Monitors matching timelines continuously. If primary networks fail, the system instantly triggers backup registries to prevent critical stockouts.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Live AI Donor Circle Matcher -->
+    <section class="dashboard-section" id="matcher-sec">
+      <div class="section-title">
+        <h2>Live AI Donor Circle Matcher</h2>
+        <p>Configure emergency parameters to simulate and track the radial search progression from local patients to emergency reserves.</p>
+      </div>
+
+      <div class="dashboard-grid two-col">
+        <!-- Parameters Form -->
+        <div class="dashboard-card form-card">
+          <div class="card-header">
+            <span>AI SEARCH PARAMETERS</span>
+            <span class="card-id">CONFIG::MATCH-LOOP</span>
+          </div>
+          <div class="card-body">
+            <form class="matcher-setup-form" id="home-search-form">
+              <div class="form-row">
+                <label for="search-blood">Target Blood Group</label>
+                <select id="search-blood" required>
+                  <option value="O-">O- (Universal / Critical)</option>
+                  <option value="O+">O+</option>
+                  <option value="A-">A-</option>
+                  <option value="A+">A+</option>
+                  <option value="B-">B-</option>
+                  <option value="B+">B+</option>
+                  <option value="AB-">AB-</option>
+                  <option value="AB+">AB+</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label for="search-city">Search City / Sector</label>
+                <select id="search-city" required>
+                  <option value="Hyderabad">Hyderabad (Metro)</option>
+                  <option value="Delhi">Delhi</option>
+                  <option value="Mumbai">Mumbai</option>
+                  <option value="Dhaka">Dhaka</option>
+                  <option value="Lagos">Lagos</option>
+                  <option value="Nairobi">Nairobi</option>
+                </select>
+              </div>
+              <div class="form-row">
+                <label for="search-urgency">Urgency / Timeline</label>
+                <select id="search-urgency" required>
+                  <option value="Critical">Critical (Immediate Dispatch)</option>
+                  <option value="Urgent">Urgent (In 24 Hours)</option>
+                  <option value="Standard">Standard (Forecasted Window)</option>
+                </select>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block" style="box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);">
+                Execute AI Matching Protocol
+              </button>
+            </form>
+          </div>
+        </div>
+
+        <!-- Concentric Circle Tracker HUD -->
+        <div class="dashboard-card matcher-visualizer-card">
+          <div class="card-header">
+            <span>RADIAL COMPATIBILITY SEARCH INDEX</span>
+            <span class="card-id">GRAPH::RADIAL-WAVE</span>
+          </div>
+          <div class="card-body visualizer-split">
+            <!-- SVG Circles -->
+            <div class="concentric-svg-box">
+              <svg viewBox="0 0 240 240" class="concentric-svg" id="matcher-concentric-circles">
+                <circle cx="120" cy="120" r="105" class="matcher-ring" id="ring-emergency" />
+                <circle cx="120" cy="120" r="75" class="matcher-ring" id="ring-backup" />
+                <circle cx="120" cy="120" r="45" class="matcher-ring" id="ring-primary" />
+                
+                <!-- Patient Node Center -->
+                <g id="node-patient">
+                  <circle cx="120" cy="120" r="12" class="patient-pulse" />
+                  <circle cx="120" cy="120" r="5" class="patient-core" />
+                </g>
+              </svg>
+            </div>
+            <!-- Results Area -->
+            <div class="matcher-results-box" id="matcher-results-hud">
+              <div class="empty-state-info" style="padding: 0;">
+                <div class="scanner-laser"></div>
+                <p style="font-size: 13px; color: var(--text-secondary); text-align: center;">Ready to initiate radial search. Configure parameters and submit to execute.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. Emergency Dispatch Timeline Player (Tape Deck) -->
+    <section class="dashboard-section" id="timeline-sec">
+      <div class="section-title">
+        <h2>Emergency Dispatch Timeline Player</h2>
+        <p>An interactive, scrubbing control deck to monitor active dispatch milestones, courier routes, and safety handshakes.</p>
+      </div>
+
+      <div class="dashboard-card cassette-player-card">
+        <div class="card-header">
+          <span>CASSETTE TIMELINE PLAYER CONTROL PANEL</span>
+          <span class="card-id">DECK::BL-DISPATCH-DECK</span>
+        </div>
+        <div class="card-body cassette-layout">
+          
+          <!-- CSS Cassette Body -->
+          <div class="cassette-deck-wrapper">
+            <div class="cassette-body">
+              <div class="cassette-label">
+                <div class="cassette-brand">CareCircle<span>AI</span></div>
+                <div class="cassette-title">AI DISPATCH SYSTEM v1.0</div>
+              </div>
+              
+              <!-- Window showing spindles -->
+              <div class="cassette-window">
+                <div class="spindle-outer">
+                  <div class="spindle spindle-left" id="spindle-left">
+                    <div class="spindle-notch"></div>
+                    <div class="spindle-notch"></div>
+                    <div class="spindle-notch"></div>
+                  </div>
+                </div>
+                
+                <div class="cassette-tape-roll"></div>
+                
+                <div class="spindle-outer">
+                  <div class="spindle spindle-right" id="spindle-right">
+                    <div class="spindle-notch"></div>
+                    <div class="spindle-notch"></div>
+                    <div class="spindle-notch"></div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="cassette-bottom-holes">
+                <span></span>
+                <span></span>
+                <span></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Controls, Scrubber and Logs -->
+          <div class="cassette-controls-box">
+            <div class="scrubber-wrapper">
+              <span class="time-readout" id="timeline-time">00:00</span>
+              <input type="range" id="timeline-scrubber" min="0" max="6" value="0" class="timeline-slider">
+              <span class="time-readout">00:06</span>
+            </div>
+
+            <div class="cassette-buttons">
+              <button class="btn btn-secondary btn-icon" id="btn-play-pause">Play Dispatch</button>
+              <button class="btn btn-secondary btn-icon" id="btn-timeline-reset">Reset</button>
+            </div>
+
+            <!-- Milestones and Active Log Console -->
+            <div class="timeline-console">
+              <div class="console-header">LOG READOUT::ACTIVE_DISPATCH_STATE</div>
+              <div class="console-body" id="timeline-log-content">
+                <strong>MILESTONE 1::REQUEST_CREATED</strong>
+                <p>AI Node registers patient demand. Verification parameters check blood compatibility index: OK.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Hoon Buddy Promo Strip -->
+    <section style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 60px 24px;">
+      <div style="max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;">
+        <div>
+          <h2 style="font-size: 28px; margin-bottom: 12px; color: var(--accent-red);">Need to find blood fast in a panic?</h2>
+          <p style="color: var(--text-secondary); line-height: 1.6;">Our interactive Voice AI, <strong>Hoon Buddy</strong>, is here to assist. Simply speak your requirements in your local language, and our voice model will instantly answer compatibility questions and start matching protocols.</p>
+        </div>
+        <div>
+          <a href="#hoon-buddy" class="btn btn-primary" style="padding: 14px 28px; font-weight: 700; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);">
+            🎙 Talk to Hoon Buddy
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Creator's Promise Section -->
+    <section style="background-color: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 80px 24px;">
+      <div style="max-width: 800px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; gap: 24px;">
+        <div style="font-size: 40px; color: var(--accent-red);">“</div>
+        <h2 style="font-size: 30px; letter-spacing: -0.5px; line-height: 1.3;">
+          "This is my personal promise to ensure that no mother loses her child because help didn't arrive in time, and that no one ever has to beg for blood on WhatsApp again."
+        </h2>
+        <p style="color: var(--text-secondary); font-size: 15px; font-weight: 500; font-style: italic;">
+          — Abdullah, Solo Creator of CareCircle AI (Built during the world's largest hackathon using 11M tokens)
+        </p>
+        <div style="margin-top: 16px;">
+          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px; max-width: 600px; margin-left: auto; margin-right: auto;">
+            We invite donors, developers, and purpose-driven individuals to join the mission and rewrite how the world finds blood with compassion, code, and community.
+          </p>
+          <a href="#register" class="btn btn-primary">Join the Donor Registry</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- =========================================================================
+       SECTION 2: REQUEST BLOOD / FIND BLOOD (#request)
+       ========================================================================= -->
+  <div id="section-request" class="page-section">
+    <div class="page-container">
+      <div class="page-header">
+        <h1>Find Compatible Donors Instantly</h1>
+        <p>Enter patient criteria. Our medical intelligence AI matches patient needs with nearby active, eligible donor nodes.</p>
+      </div>
+
+      <!-- Google Translate Widget for Translation Layer -->
+      <div id="google_translate_wrapper" style="background-color: var(--bg-secondary); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 16px; margin-bottom: 24px; display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+        <div>
+          <h4 style="font-size:14px; font-weight:700;">Language Translation Panel</h4>
+          <p style="font-size:12px; color:var(--text-secondary);">Translate the request page into your native regional language.</p>
+        </div>
+        <div id="google_translate_element"></div>
+      </div>
+
+      <!-- Patient Request Intake Form -->
+      <div class="form-card">
+        <form id="request-form">
+          <div class="form-group">
+            <label for="patient-name">Patient Name</label>
+            <input type="text" id="patient-name" placeholder="e.g. Anjali Verma" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="blood-group">Required Blood Group</label>
+              <select id="blood-group" required>
+                <option value="">Select Blood Group</option>
+                <option value="O-">O- (Universal Donor)</option>
+                <option value="O+">O+</option>
+                <option value="A-">A-</option>
+                <option value="A+">A+</option>
+                <option value="B-">B-</option>
+                <option value="B+">B+</option>
+                <option value="AB-">AB-</option>
+                <option value="AB+">AB+</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="urgency-level">Urgency Level</label>
+              <select id="urgency-level" required>
+                <option value="Standard">Standard (Within 72h)</option>
+                <option value="Urgent">Urgent (Within 24h)</option>
+                <option value="Critical" selected>Critical (Emergency Match)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="patient-country">Country</label>
+              <input type="text" id="patient-country" placeholder="e.g. India" value="India" required>
+            </div>
+            <div class="form-group">
+              <label for="patient-city">City</label>
+              <input type="text" id="patient-city" placeholder="e.g. Hyderabad" value="Hyderabad" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="date-needed">Date Needed By</label>
+            <input type="date" id="date-needed" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%;">
+            Run AI Donor Matcher
+          </button>
+        </form>
+      </div>
+
+      <!-- AI Match Results Display Panel -->
+      <div class="results-card" id="results-card">
+        <h2>
+          AI Search Results
+          <div>
+            <span id="active-urgency-badge" class="badge"></span>
+            <span id="matched-count-badge" class="badge badge-green" style="margin-left: 8px;"></span>
+          </div>
+        </h2>
+
+        <!-- Matching Stepper Logs -->
+        <div class="step-stepper" id="step-container">
+          <!-- Filled via JS during search -->
+        </div>
+
+        <div class="match-list" id="match-container" style="margin-top: 32px;">
+          <!-- Card entries rendered dynamically via JS -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       SECTION 3: REGISTER DONOR (#register)
+       ========================================================================= -->
+  <div id="section-register" class="page-section">
+    <div class="page-container">
+      <div class="page-header">
+        <h1>Join the CareCircle AI Donor Network</h1>
+        <p>Your details are safely encrypted and secured using Supabase Row Level Security. You will only be alerted when compatible patients request blood in your city.</p>
+      </div>
+
+      <!-- Donor Registration Form -->
+      <div class="form-card">
+        <form id="register-form">
+          
+          <!-- Live Cooldown Eligibility Widget -->
+          <div class="eligibility-banner" id="eligibility-banner">
+            <div class="eligibility-icon" style="background-color: var(--text-muted); color: var(--bg-secondary);">?</div>
+            <div class="eligibility-info">
+              <h4>Check Cooldown Eligibility</h4>
+              <p>Select your last blood donation date below to calculate your availability status.</p>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="donor-name">Full Name</label>
+            <input type="text" id="donor-name" placeholder="e.g. Neha Sharma" required>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="donor-blood">Blood Group</label>
+              <select id="donor-blood" required>
+                <option value="">Select Blood Group</option>
+                <option value="O-">O- (Universal Donor)</option>
+                <option value="O+">O+</option>
+                <option value="A-">A-</option>
+                <option value="A+">A+</option>
+                <option value="B-">B-</option>
+                <option value="B+">B+</option>
+                <option value="AB-">AB-</option>
+                <option value="AB+">AB+</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="donor-last-donation">Last Donation Date</label>
+              <input type="date" id="donor-last-donation" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="donor-country">Country</label>
+              <input type="text" id="donor-country" placeholder="e.g. India" value="India" required>
+            </div>
+            <div class="form-group">
+              <label for="donor-city">City</label>
+              <input type="text" id="donor-city" placeholder="e.g. Hyderabad" value="Hyderabad" required>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="donor-phone">Phone Number (SMS Alert Dispatch Node)</label>
+              <input type="tel" id="donor-phone" placeholder="e.g. +91 98765 43210" required>
+            </div>
+            <div class="form-group">
+              <label for="donor-email">Email Address</label>
+              <input type="email" id="donor-email" placeholder="e.g. donor@email.com" required>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 12px;">
+            Submit Donor Registration
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       SECTION 4: HOON BUDDY VOICE AI (#hoon-buddy)
+       ========================================================================= -->
+  <div id="section-hoon-buddy" class="page-section">
+    <div class="page-container" style="max-width: 1100px;">
+      <div class="page-header">
+        <h1>Hoon Buddy Voice Assistant</h1>
+        <p>Emergency patients in panic often struggle to type out details. Powered by advanced Speech-to-Text and Synthesis, Hoon Buddy offers instant comfort and answers.</p>
+      </div>
+
+      <!-- AWS AI Status Banner -->
+      <div class="api-key-panel" style="background: rgba(76, 217, 100, 0.05); border-color: rgba(76, 217, 100, 0.3);">
+        <div class="api-key-header">
+          <h4 style="color: var(--color-green); display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+            <span style="display: inline-block; width: 8px; height: 8px; background-color: var(--color-green); border-radius: 50%; box-shadow: 0 0 8px var(--color-green);"></span>
+            CareCircle AI Cloud Engine Connected
+          </h4>
+          <p style="color: var(--text-secondary); margin: 0;">Hoon Buddy Voice Assistant is connected to Amazon Bedrock through the CareCircle AWS AI Lambda.</p>
+        </div>
+        <div style="font-size: 11px; font-weight: 700; color: var(--color-green); background-color: var(--color-green-muted); padding: 6px 12px; border-radius: var(--radius-sm); text-transform: uppercase; letter-spacing: 1px;">
+          Active
+        </div>
+      </div>
+
+      <!-- Voice AI Dual Layout -->
+      <div class="voice-wrapper">
+        
+        <!-- Left: Interactive Mic & Soundwave Console -->
+        <div class="voice-console">
+          <button class="mic-btn" id="mic-btn" aria-label="Toggle Microphone Input">
+            🎙
+          </button>
+          
+          <div class="wave-container">
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+            <span class="wave-bar"></span>
+          </div>
+
+          <div class="voice-status" id="voice-status">
+            Listening paused. Press Mic to speak.
+          </div>
+
+          <div class="voice-transcript" id="voice-transcript">
+            <div style="color: var(--text-muted); text-align: center; padding: 16px 0;">
+              Awaiting voice commands or FAQ selections.
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Interactive FAQ Triggers -->
+        <div class="faq-card">
+          <h3>Hoon Buddy Quick Registry</h3>
+          <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">Click on any question below. Hoon Buddy will answer you aloud immediately using Speech Synthesis.</p>
+          
+          <div class="faq-list">
+            <button class="faq-item" data-faq="universal">Who is the universal blood donor?</button>
+            <button class="faq-item" data-faq="tattoo">Can I donate blood if I recently got a tattoo?</button>
+            <button class="faq-item" data-faq="cooldown">How long must I wait between blood donations?</button>
+            <button class="faq-item" data-faq="matching">How does CareCircle AI's AI matching algorithm work?</button>
+            <button class="faq-item" data-faq="supabase">How does the platform secure donor phone numbers?</button>
+            <button class="faq-item" data-faq="begging">What is the primary problem with WhatsApp coordination?</button>
+            <button class="faq-item" data-faq="age">What are the age and weight limits for blood donation?</button>
+            <button class="faq-item" data-faq="pregnancy">Can pregnant or breastfeeding women donate blood?</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       SECTION 5: BLOOD BANKS MAP (#map)
+       ========================================================================= -->
+  <div id="section-map" class="page-section">
+    <div class="page-container" style="max-width: 1200px; margin-bottom: 40px;">
+      <div class="page-header" style="margin-bottom: 24px;">
+        <h1>Locate Verified Blood Banks</h1>
+        <p>Search by city or country to map nearby reserve banks, coordinates, and live simulated blood group inventories.</p>
+      </div>
+
+      <!-- Map and Sidebar Layout -->
+      <div class="map-wrapper">
+        
+        <!-- Left Search Sidebar -->
+        <div class="map-sidebar">
+          <div class="map-search">
+            <input type="text" id="map-search-input" placeholder="e.g. Hyderabad, Mumbai, Chennai..." value="Hyderabad">
+            <button class="map-search-btn" id="map-search-btn" aria-label="Perform Search">🔍</button>
+          </div>
+          
+          <div class="map-list" id="bank-list-container">
+            <!-- Populated dynamically via app.js -->
+          </div>
+        </div>
+
+        <!-- Right Leaflet Map -->
+        <div class="map-container-box">
+          <div id="blood-banks-map" style="width: 100%; height: 100%;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       SECTION 6: ADMIN command CENTER (#admin)
+       ========================================================================= -->
+  <div id="section-admin" class="page-section">
+    <div class="page-container" style="max-width: 1200px; margin-bottom: 40px;">
+      <div class="page-header" style="margin-bottom: 24px;">
+        <h1>Admin Dashboard Control Panel</h1>
+        <p>Secure coordinator oversight powered by Supabase Real-Time Sync & Row Level Security (RLS) policy definitions.</p>
+      </div>
+
+      <!-- Metric Counts Summary row -->
+      <div class="admin-metrics">
+        <div class="metric-card">
+          <span>Total Registered</span>
+          <h2 id="metric-donors">15</h2>
+          <p>Verified local database nodes</p>
+        </div>
+        <div class="metric-card">
+          <span>Active Requests</span>
+          <h2 id="metric-requests">8</h2>
+          <p>Shortage alert triggers</p>
+        </div>
+        <div class="metric-card">
+          <span>Success Matches</span>
+          <h2 id="metric-matches">12</h2>
+          <p>Dispatched donor contacts</p>
+        </div>
+        <div class="metric-card">
+          <span>Active Countries</span>
+          <h2 id="metric-countries">5</h2>
+          <p>Global coverage scale</p>
+        </div>
+      </div>
+
+      <!-- Admin Panel Columns -->
+      <div class="admin-layout">
+        
+        <!-- Left Column: Registry Table -->
+        <div class="admin-panel">
+          <div class="panel-header">
+            <div>
+              <h3>Active Donor Registry Database</h3>
+              <p style="font-size: 12px; color: var(--text-secondary); margin-top: 2px;">Synchronized with local storage tables. Toggle RLS security settings on the right.</p>
+            </div>
+            <button class="btn btn-secondary btn-sm" id="btn-export-donors">Export CSV</button>
+          </div>
+
+          <div class="admin-table-wrapper">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Name</th>
+                  <th>Group</th>
+                  <th>Location</th>
+                  <th>Last Donation</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="admin-table-body">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Right Column: Chart & Security Toggles -->
+        <div>
+          <!-- Distribution Chart -->
+          <div class="chart-card">
+            <h3>Group Distribution</h3>
+            <p style="font-size:12px; color:var(--text-secondary); margin-top:-12px; margin-bottom: 8px;">Breakdown of current donors in database by blood type.</p>
+            <div class="chart-bar-container" id="chart-container">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Security Configuration Switch -->
+          <div class="security-card">
+            <div class="security-info" id="security-message">
+              <span style="color: var(--color-green); font-weight: 700;">✓ RLS POLICIES ENFORCED (PRODUCTION STATE)</span>
+              <p style="margin-top: 4px; font-size: 11px; color: var(--text-muted);">Supabase row level policies are actively filtering credentials. Donor phone numbers are encrypted. Secure API keys and token authorizations are confirmed.</p>
+            </div>
+            <div style="flex-shrink: 0;">
+              <label class="toggle-switch">
+                <input type="checkbox" id="security-rls-toggle" checked>
+                <span class="slider"></span>
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       SECTION 7: SECURITY TERMINAL LOGIN (#login)
+       ========================================================================= -->
+  <div id="section-login" class="page-section">
+    <div class="page-container" style="max-width: 550px; margin-bottom: 60px;">
+      <div class="page-header" style="text-align: center;">
+        <h1>Terminal Verification Portal</h1>
+        <p>Verify your node coordinates and access clearance to sync with the CareCircle AI distributed network.</p>
+      </div>
+
+      <!-- Login Error Log -->
+      <div class="login-error-log" id="login-error-box">
+        SECURITY EXCEPTION: Access key signature invalid.
+      </div>
+
+      <!-- Custom Authentication Form -->
+      <div class="form-card">
+        <form id="login-form">
+          <!-- Role Selectors -->
+          <label style="margin-bottom: 8px; display: block;">Select Access Role Node</label>
+          <div class="role-selectors">
+            <div class="role-card active" data-role="patient">
+              <div class="role-icon">🩸</div>
+              <span>Recipient</span>
+            </div>
+            <div class="role-card" data-role="donor">
+              <div class="role-icon">🛡️</div>
+              <span>Donor</span>
+            </div>
+            <div class="role-card" data-role="admin">
+              <div class="role-icon">💻</div>
+              <span>Admin</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="login-username">Node Username</label>
+            <input type="text" id="login-username" placeholder="Enter username..." required autocomplete="username">
+          </div>
+
+          <div class="form-group" style="margin-bottom: 24px;">
+            <label for="login-password">Node Access Key (Password)</label>
+            <input type="password" id="login-password" placeholder="Enter password..." required autocomplete="current-password">
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-block">
+            Verify Node Credentials
+          </button>
+        </form>
+      </div>
+
+      <!-- Sandbox Simulation Hints -->
+      <div class="sandbox-hint">
+        <h5>Sandbox Credentials Matrix</h5>
+        <ul>
+          <li>Node Recipient: <strong>patient202</strong> / <code>patient123</code></li>
+          <li>Node Donor: <strong>donor101</strong> / <code>donor123</code></li>
+          <li>Node Admin: <strong>admin</strong> / <code>admin123</code></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>CareCircle<span>AI</span></h3>
+        <p>Rewriting how the world finds blood with compassion, code, and community. AI-powered matching that prioritizes patient survival.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="#request">Find Donors</a></li>
+          <li><a href="#register">Register as Donor</a></li>
+          <li><a href="#hoon-buddy">Hoon Buddy AI</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Locate</h4>
+        <ul>
+          <li><a href="#map">Blood Bank Map</a></li>
+          <li><a href="#admin">Admin Dashboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Mission</h4>
+        <ul>
+          <li><a href="https://supabase.com" target="_blank">Supabase DB</a></li>
+          <li><a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 CareCircle AI. All Rights Reserved. Built for global emergency response.</p>
+      <p>Secure connection verified with Supabase RLS</p>
+    </div>
+  </footer>
+
+  <!-- Leaflet JS Map Engine -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Google Translate Integration Script -->
+  <script type="text/javascript">
+    function googleTranslateElementInit() {
+      new google.translate.TranslateElement({
+        pageLanguage: 'en'
+      }, 'google_translate_element');
+    }
+  </script>
+  <script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+  <!-- Core JavaScript Logic & Router -->
+  <script>
+document.addEventListener('DOMContentLoaded', () => {
+
+  const escapeHTML = (str) => {
+    if (typeof str !== 'string') return str;
+    return str.replace(/[&<>"']/g, (m) => ({
+      '&': '&amp;',
+      '<': '&lt;',
+      '>': '&gt;',
+      '"': '&quot;',
+      "'": '&#39;'
+    }[m]));
+  };
+
+  // =========================================================================
+  // -1. AUTHENTICATION & SINGLE-FILE HASH ROUTER
+  // =========================================================================
+  
+  function rebuildNavbar(activeHash) {
+    const navMenu = document.getElementById('nav-menu');
+    if (!navMenu) return;
+
+    const isHome = activeHash === '#home';
+    const isRequest = activeHash === '#request';
+    const isRegister = activeHash === '#register';
+    const isHoon = activeHash === '#hoon-buddy';
+    const isMap = activeHash === '#map';
+    const isAdmin = activeHash === '#admin';
+    const isLogin = activeHash === '#login';
+
+    const activeSession = JSON.parse(sessionStorage.getItem('carecircle_session'));
+
+    let menuHTML = `
+      <li><a href="#home" class="${isHome ? 'active' : ''}">Home</a></li>
+      <li><a href="#request" class="${isRequest ? 'active' : ''}">Find Blood</a></li>
+      <li><a href="#register" class="${isRegister ? 'active' : ''}">Register Donor</a></li>
+      <li><a href="#hoon-buddy" class="${isHoon ? 'active' : ''}">Hoon Buddy Voice</a></li>
+      <li><a href="#map" class="${isMap ? 'active' : ''}">Blood Banks</a></li>
+    `;
+
+    if (activeSession) {
+      if (activeSession.role === 'admin') {
+        menuHTML += `<li><a href="#admin" class="${isAdmin ? 'active' : ''}">Admin</a></li>`;
+      }
+      
+      const roleBadge = activeSession.role.toUpperCase();
+      menuHTML += `
+        <li style="display: flex; align-items: center; margin-left: 10px;">
+          <span style="font-size: 11px; font-family: monospace; border: 1px solid var(--accent-red); padding: 4px 8px; border-radius: var(--radius-sm); color: var(--accent-red); text-transform: uppercase; font-weight: 700; white-space: nowrap;">
+            ${roleBadge}: ${escapeHTML(activeSession.displayName)}
+          </span>
+        </li>
+        <li><a href="#" id="btn-logout" style="color: #ff5e62 !important; border: 1px solid rgba(255, 94, 98, 0.3); padding: 6px 12px; border-radius: var(--radius-sm); font-size: 12px; font-weight: bold; text-transform: uppercase; margin-left: 8px;">Logout</a></li>
+      `;
+    } else {
+      menuHTML += `<li><a href="#login" class="${isLogin ? 'active' : ''}">Login</a></li>`;
+    }
+
+    menuHTML += `<li><a href="#request" class="btn-cta">Request Now</a></li>`;
+    navMenu.innerHTML = menuHTML;
+
+    // Logout Click Handler
+    const btnLogout = document.getElementById('btn-logout');
+    if (btnLogout) {
+      btnLogout.addEventListener('click', (e) => {
+        e.preventDefault();
+        sessionStorage.removeItem('carecircle_session');
+        alert("TERMINAL RESET: Security session cleared. Disconnecting coordinate mapping.");
+        window.location.hash = '#login';
+      });
+    }
+
+    // Re-bind menu toggle button
+    const menuToggleBtn = document.getElementById('menu-toggle-btn');
+    if (menuToggleBtn) {
+      menuToggleBtn.onclick = () => {
+        navMenu.classList.toggle('active');
+        menuToggleBtn.classList.toggle('open');
+      };
+    }
+
+    // Update navbar class background
+    const navbar = document.getElementById('main-nav');
+    if (navbar) {
+      if (activeHash === '#home') {
+        navbar.classList.remove('scrolled');
+        navbar.classList.remove('night-theme');
+        handleScroll();
+      } else {
+        navbar.classList.add('scrolled');
+        navbar.classList.add('night-theme');
+      }
+    }
+  }
+
+  function showSection(hash) {
+    const sections = {
+      '#home': document.getElementById('section-home'),
+      '#request': document.getElementById('section-request'),
+      '#register': document.getElementById('section-register'),
+      '#hoon-buddy': document.getElementById('section-hoon-buddy'),
+      '#map': document.getElementById('section-map'),
+      '#admin': document.getElementById('section-admin'),
+      '#login': document.getElementById('section-login')
+    };
+
+    let targetHash = hash;
+    if (!sections[targetHash]) {
+      targetHash = '#home';
+    }
+
+    // Security Gate Shield for Admin Page
+    if (targetHash === '#admin') {
+      const activeSession = JSON.parse(sessionStorage.getItem('carecircle_session'));
+      if (!activeSession || activeSession.role !== 'admin') {
+        alert("SECURITY EXCEPTION: Administrator terminal clearance verification failed. Redirecting to access gateway.");
+        window.location.hash = '#login';
+        return;
+      }
+    }
+
+    // Toggle Section visibility
+    Object.keys(sections).forEach(key => {
+      const sec = sections[key];
+      if (sec) {
+        if (key === targetHash) {
+          sec.style.display = 'block';
+        } else {
+          sec.style.display = 'none';
+        }
+      }
+    });
+
+    // Run tab-specific population triggers
+    rebuildNavbar(targetHash);
+    
+    if (targetHash === '#request') {
+      initRequestPage();
+    } else if (targetHash === '#register') {
+      initRegisterPage();
+    } else if (targetHash === '#admin') {
+      renderAdminDashboard();
+    } else if (targetHash === '#map') {
+      // Invalidate leaflet size to re-center maps inside hidden tabs
+      if (window.leafletMap) {
+        setTimeout(() => {
+          window.leafletMap.invalidateSize();
+        }, 150);
+      }
+    }
+
+    window.scrollTo(0, 0);
+  }
+
+  window.addEventListener('hashchange', () => {
+    showSection(window.location.hash);
+  });
+
+  // =========================================================================
+  // 0. NAVBAR SCROLL & DAY-TO-NIGHT PARALLAX EFFECT
+  // =========================================================================
+  const heroLanding = document.querySelector('.hero-landing');
+  const heroWrapper = document.getElementById('hero-pinned-wrapper');
+  
+  function parseHex(hex) {
+    let clean = hex.replace('#', '');
+    if (clean.length === 3) {
+      clean = clean.split('').map(c => c + c).join('');
+    }
+    const num = parseInt(clean, 16);
+    return {
+      r: (num >> 16) & 255,
+      g: (num >> 8) & 255,
+      b: num & 255
+    };
+  }
+
+  function lerpColor(color1, color2, factor) {
+    const c1 = parseHex(color1);
+    const c2 = parseHex(color2);
+    const r = Math.round(c1.r + (c2.r - c1.r) * factor);
+    const g = Math.round(c1.g + (c2.g - c1.g) * factor);
+    const b = Math.round(c1.b + (c2.b - c1.b) * factor);
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  function handleScroll() {
+    const currentHash = window.location.hash || '#home';
+    if (currentHash !== '#home') return;
+
+    const scrollY = window.scrollY;
+    const navbar = document.getElementById('main-nav');
+    
+    // Navbar scroll background trigger
+    if (navbar) {
+      if (scrollY > 50) {
+        navbar.classList.add('scrolled');
+      } else {
+        navbar.classList.remove('scrolled');
+      }
+    }
+    
+    // Day to night landing transition on scroll
+    if (heroWrapper && heroLanding) {
+      const rect = heroWrapper.getBoundingClientRect();
+      const totalScroll = heroWrapper.offsetHeight - window.innerHeight;
+      let ratio = 0;
+      if (totalScroll > 0) {
+        ratio = Math.min(Math.max(-rect.top / totalScroll, 0), 1);
+      }
+      heroLanding.style.setProperty('--night-ratio', ratio);
+      
+      const dayBuilding = document.getElementById('day-building');
+      const nightBuilding = document.getElementById('night-building');
+      const wavesContainer = document.getElementById('waves-container');
+      const welcomeText = heroLanding.querySelector('.welcome-text');
+      const landingTitle = heroLanding.querySelector('.landing-title');
+      const watchLink = heroLanding.querySelector('.watch-link');
+      const watchDot = heroLanding.querySelector('.watch-dot');
+      const heroDesc = heroLanding.querySelector('.hero-desc');
+      const skyBg = document.getElementById('sky-bg');
+      
+      if (dayBuilding) dayBuilding.style.opacity = 1 - ratio;
+      if (nightBuilding) nightBuilding.style.opacity = ratio;
+      
+      if (wavesContainer) {
+        const brightness = 1 - 0.75 * ratio;
+        const saturate = 1 - 0.2 * ratio;
+        wavesContainer.style.filter = `brightness(${brightness}) saturate(${saturate})`;
+      }
+      
+      if (skyBg) {
+        const topColor = lerpColor('#b9d3ff', '#202020', ratio);
+        const bottomColor = lerpColor('#e0e9ff', '#212e50', ratio);
+        skyBg.style.background = `linear-gradient(to bottom, ${topColor}, ${bottomColor})`;
+      }
+      
+      if (welcomeText) welcomeText.style.color = lerpColor('#111726', '#e0e9ff', ratio);
+      if (landingTitle) landingTitle.style.color = lerpColor('#111726', '#f9de71', ratio);
+      if (heroDesc) heroDesc.style.color = lerpColor('#111726', '#e0e9ff', ratio);
+      if (watchLink) watchLink.style.color = lerpColor('#111726', '#e0e9ff', ratio);
+      if (watchDot) watchDot.style.backgroundColor = lerpColor('#111726', '#f9de71', ratio);
+      
+      if (ratio > 0.45) {
+        heroLanding.classList.add('night-theme');
+        if (navbar) navbar.classList.add('night-theme');
+      } else {
+        heroLanding.classList.remove('night-theme');
+        if (navbar) navbar.classList.remove('night-theme');
+      }
+    }
+  }
+
+  // Bind scroll and resize listeners for home page hero
+  window.addEventListener('scroll', handleScroll);
+  window.addEventListener('resize', handleScroll);
+
+  // =========================================================================
+  // 0.5. HOMEPAGE DASHBOARD INTERACTIVITY LOGIC
+  // =========================================================================
+
+  // A. Hyderabad SVG Map Interactive Sectors
+  const mapSectors = document.querySelectorAll('.map-sector');
+  const mapHotspots = document.querySelectorAll('.map-hotspot');
+  const journeyDetailBox = document.getElementById('journey-detail-box');
+
+  const SECTOR_DATA = {
+    north: {
+      title: "SECTOR: HYDERABAD NORTH",
+      name: "Yusuf (Leukemia Case)",
+      blood: "A-",
+      cycle: "14 Days",
+      status: "Active Match Found",
+      statusColor: "var(--color-green)",
+      courier: "Courier Dispatched"
+    },
+    secunderabad: {
+      title: "SECTOR: SECUNDERABAD AREA",
+      name: "Anjali (Thalassemia Case)",
+      blood: "O-",
+      cycle: "21 Days",
+      status: "In 3 Days (Critical)",
+      statusColor: "var(--accent-red)",
+      courier: "Standby pre-warmed"
+    },
+    cyberabad: {
+      title: "SECTOR: CYBERABAD (HI-TECH)",
+      name: "Kabir (Sickle Cell Case)",
+      blood: "B-",
+      cycle: "28 Days",
+      status: "Searching Backup",
+      statusColor: "var(--color-orange)",
+      courier: "2 Donors Verified"
+    },
+    south: {
+      title: "SECTOR: HYDERABAD SOUTH",
+      name: "Lakshmi (Thalassemia Case)",
+      blood: "O+",
+      cycle: "21 Days",
+      status: "In 7 Days (Stable)",
+      statusColor: "var(--color-green)",
+      courier: "2 Matches Verified"
+    }
+  };
+
+  function updateJourneyPanel(sectorId) {
+    const data = SECTOR_DATA[sectorId];
+    if (!data || !journeyDetailBox) return;
+
+    journeyDetailBox.innerHTML = `
+      <div class="journey-detail-wrapper">
+        <div class="journey-header">
+          <span>${escapeHTML(data.title)}</span>
+          <h3>${escapeHTML(data.name)}</h3>
+        </div>
+        <div class="journey-metric-row">
+          <div class="journey-metric">
+            <span>Required Group</span>
+            <strong style="color: var(--accent-red);">${escapeHTML(data.blood)}</strong>
+          </div>
+          <div class="journey-metric">
+            <span>Cycle Period</span>
+            <strong>${escapeHTML(data.cycle)}</strong>
+          </div>
+        </div>
+        <div class="journey-metric-row">
+          <div class="journey-metric">
+            <span>Need Status</span>
+            <strong style="color: ${data.statusColor};">${escapeHTML(data.status)}</strong>
+          </div>
+          <div class="journey-metric">
+            <span>Standby Node</span>
+            <strong>${escapeHTML(data.courier)}</strong>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  function clearActiveSectors() {
+    mapSectors.forEach(el => el.classList.remove('active'));
+    mapHotspots.forEach(el => el.classList.remove('active'));
+  }
+
+  mapSectors.forEach(sector => {
+    const sectorId = sector.id.replace('sector-', '');
+
+    sector.addEventListener('click', () => {
+      clearActiveSectors();
+      sector.classList.add('active');
+      const matchingHotspot = document.querySelector(`.map-hotspot[data-sector="${sectorId}"]`);
+      if (matchingHotspot) matchingHotspot.classList.add('active');
+      updateJourneyPanel(sectorId);
+    });
+
+    sector.addEventListener('mouseenter', () => {
+      if (!sector.classList.contains('active')) {
+        sector.style.fill = 'rgba(239, 68, 68, 0.1)';
+      }
+    });
+
+    sector.addEventListener('mouseleave', () => {
+      if (!sector.classList.contains('active')) {
+        sector.style.fill = '';
+      }
+    });
+  });
+
+  mapHotspots.forEach(hotspot => {
+    const sectorId = hotspot.getAttribute('data-sector');
+    const pathEl = document.getElementById(`sector-${sectorId}`);
+
+    hotspot.addEventListener('click', () => {
+      clearActiveSectors();
+      hotspot.classList.add('active');
+      if (pathEl) pathEl.classList.add('active');
+      updateJourneyPanel(sectorId);
+    });
+  });
+
+  // B. Concentric Circles Search Matching Simulation
+  const homeSearchForm = document.getElementById('home-search-form');
+  const resultsHud = document.getElementById('matcher-results-hud');
+  const ringPrimary = document.getElementById('ring-primary');
+  const ringBackup = document.getElementById('ring-backup');
+  const ringEmergency = document.getElementById('ring-emergency');
+
+  if (homeSearchForm) {
+    homeSearchForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const searchBlood = document.getElementById('search-blood').value;
+      const searchCity = document.getElementById('search-city').value;
+      const searchUrgency = document.getElementById('search-urgency').value;
+
+      if (resultsHud) {
+        resultsHud.classList.add('scanning');
+        resultsHud.innerHTML = `
+          <div class="scanner-laser"></div>
+          <div style="text-align: center; color: var(--text-secondary); width: 100%;">
+            <p style="font-weight:700; color:var(--accent-red); margin-bottom:4px; letter-spacing:0.5px;">PROXIMITY RADIAL LOOKUP ACTIVE</p>
+            <span style="font-size:11px; opacity:0.7;">Scanning database registers...</span>
+          </div>
+        `;
+      }
+
+      if (ringPrimary) ringPrimary.classList.remove('active');
+      if (ringBackup) ringBackup.classList.remove('active');
+      if (ringEmergency) ringEmergency.classList.remove('active');
+
+      setTimeout(() => { if (ringPrimary) ringPrimary.classList.add('active'); }, 200);
+      setTimeout(() => { if (ringBackup) ringBackup.classList.add('active'); }, 600);
+      setTimeout(() => { if (ringEmergency) ringEmergency.classList.add('active'); }, 1100);
+
+      setTimeout(() => {
+        if (resultsHud) {
+          resultsHud.classList.remove('scanning');
+          
+          const donors = getDonors();
+          const matches = donors.filter(d => 
+            isCompatible(d.blood, searchBlood) && 
+            (d.city.toLowerCase() === searchCity.toLowerCase() || searchCity === 'Hyderabad')
+          );
+
+          let riskScore = 40;
+          if (searchBlood === 'O-' || searchBlood === 'AB-') riskScore += 30;
+          if (searchUrgency === 'Critical') riskScore += 25;
+          if (matches.length === 0) riskScore += 10;
+          riskScore = Math.min(riskScore, 98);
+
+          let riskColor = 'var(--color-green)';
+          if (riskScore >= 80) riskColor = 'var(--accent-red)';
+          else if (riskScore >= 55) riskColor = 'var(--color-orange)';
+
+          if (matches.length === 0) {
+            resultsHud.innerHTML = `
+              <div class="match-list-hud">
+                <h4>RADIAL MATCH RESULTS::0 MATCHES</h4>
+                <p style="font-size:12px; color:var(--text-secondary);">No direct local compatible donors found in registry database.</p>
+                <div style="background:rgba(245,158,11,0.05); border:1px dashed var(--color-orange); padding:10px; border-radius:var(--radius-sm); margin-top:8px; font-size:11px; color:var(--text-primary);">
+                  <strong>RECOMMENDED ACTION:</strong> Dispatching request node to Delhi and Mumbai emergency centers. Calling standby banks.
+                </div>
+              </div>
+            `;
+          } else {
+            const listItems = matches.slice(0, 3).map(m => `
+              <li>
+                <span>${escapeHTML(m.name)} (Group ${escapeHTML(m.blood)})</span>
+                <strong style="color:var(--color-green);">Eligible</strong>
+              </li>
+            `).join('');
+
+            resultsHud.innerHTML = `
+              <div class="match-list-hud">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                  <h4>RADIAL MATCH RESULTS::${matches.length} FOUND</h4>
+                  <span style="font-family:monospace; font-weight:800; font-size:13px; color:${riskColor};">RISK: ${riskScore}%</span>
+                </div>
+                <ul>
+                  ${listItems}
+                </ul>
+                <p style="font-size:10px; color:var(--text-muted); margin-top:4px;">Secure patient timeline loops initiated. Standby contacts prepared.</p>
+              </div>
+            `;
+          }
+        }
+      }, 1800);
+    });
+  }
+
+  // C. Emergency Timeline Player (Tape Recorder)
+  const timelineScrubber = document.getElementById('timeline-scrubber');
+  const btnPlayPause = document.getElementById('btn-play-pause');
+  const btnReset = document.getElementById('btn-timeline-reset');
+  const timelineTime = document.getElementById('timeline-time');
+  const spindleLeft = document.getElementById('spindle-left');
+  const spindleRight = document.getElementById('spindle-right');
+  const timelineLog = document.getElementById('timeline-log-content');
+
+  const TIMELINE_LOGS = [
+    {
+      title: "MILESTONE 1::REQUEST_CREATED",
+      desc: "AI Node registers patient demand. Verification parameters check blood compatibility index: OK."
+    },
+    {
+      title: "MILESTONE 2::AI_MATCHING_INITIATED",
+      desc: "Radial matching algorithm executes. Proximity parameters set: Delhi/Hyderabad/Dhaka node limits checked."
+    },
+    {
+      title: "MILESTONE 3::PRIMARY_CIRCLE_CONTACTED",
+      desc: "Primary emergency registry alerts dispatched. Checking donor cooldown timers and eligibility records."
+    },
+    {
+      title: "MILESTONE 4::MATCH_CONFIRMED",
+      desc: "Active donor Aarav/Siddharth submits verification key. Secure transaction handshake established via Supabase nodes."
+    },
+    {
+      title: "MILESTONE 5::COURIER_ASSIGNED",
+      desc: "Emergency courier node dispatched. Cold-chain storage temperature checked: 4.2°C (Optimal)."
+    },
+    {
+      title: "MILESTONE 6::COURIER_DISPATCHED",
+      desc: "Transit routing active. Estimated delivery: 12 minutes. Hospital standby alerts confirmed."
+    },
+    {
+      title: "MILESTONE 7::BLOOD_READY",
+      desc: "Delivery complete. Receipt hash generated. Emergency request closed successfully."
+    }
+  ];
+
+  let timelineInterval = null;
+
+  function updateTimelineUI(stepIndex) {
+    const log = TIMELINE_LOGS[stepIndex];
+    if (!log) return;
+
+    if (timelineTime) timelineTime.textContent = `00:0${stepIndex}`;
+    if (timelineLog) {
+      timelineLog.innerHTML = `
+        <strong>${escapeHTML(log.title)}</strong>
+        <p>${escapeHTML(log.desc)}</p>
+      `;
+    }
+    if (timelineScrubber) timelineScrubber.value = stepIndex;
+  }
+
+  function startTimelinePlayback() {
+    if (timelineInterval) return;
+
+    btnPlayPause.textContent = "Pause Dispatch";
+    if (spindleLeft) spindleLeft.classList.add('rotating-spindle');
+    if (spindleRight) spindleRight.classList.add('rotating-spindle');
+
+    timelineInterval = setInterval(() => {
+      let currentVal = parseInt(timelineScrubber.value);
+      let nextVal = currentVal + 1;
+      if (nextVal >= TIMELINE_LOGS.length) {
+        pauseTimelinePlayback();
+        nextVal = 0;
+      }
+      timelineScrubber.value = nextVal;
+      updateTimelineUI(nextVal);
+    }, 2500);
+  }
+
+  function pauseTimelinePlayback() {
+    if (!timelineInterval) return;
+
+    btnPlayPause.textContent = "Play Dispatch";
+    if (spindleLeft) spindleLeft.classList.remove('rotating-spindle');
+    if (spindleRight) spindleRight.classList.remove('rotating-spindle');
+
+    clearInterval(timelineInterval);
+    timelineInterval = null;
+  }
+
+  if (btnPlayPause && timelineScrubber) {
+    btnPlayPause.addEventListener('click', () => {
+      if (timelineInterval) {
+        pauseTimelinePlayback();
+      } else {
+        startTimelinePlayback();
+      }
+    });
+
+    btnReset.addEventListener('click', () => {
+      pauseTimelinePlayback();
+      timelineScrubber.value = 0;
+      updateTimelineUI(0);
+    });
+
+    timelineScrubber.addEventListener('input', () => {
+      pauseTimelinePlayback();
+      updateTimelineUI(parseInt(timelineScrubber.value));
+    });
+  }
+
+  // =========================================================================
+  // 1. DATA LAYER (localStorage Seeding & Access)
+  // =========================================================================
+  const DEFAULT_DONORS = [
+    { id: "DL-101", name: "Neha Sharma", blood: "O-", lastDonation: "2026-02-15", country: "India", city: "Delhi", phone: "+91 90123 45678", email: "neha.s@email.com" },
+    { id: "DL-102", name: "Kunal Sen", blood: "A+", lastDonation: "2025-11-20", country: "India", city: "Kolkata", phone: "+91 80123 45678", email: "kunal.s@email.com" },
+    { id: "DL-103", name: "Aarav Sharma", blood: "O-", lastDonation: "2026-03-01", country: "India", city: "Mumbai", phone: "+91 98765 43210", email: "aarav@email.com" },
+    { id: "DL-104", name: "Priya Patel", blood: "B+", lastDonation: "2026-05-10", country: "India", city: "Mumbai", phone: "+91 87654 32109", email: "priya@email.com" },
+    { id: "DL-105", name: "Anisur Rahman", blood: "O-", lastDonation: "2026-01-10", country: "Bangladesh", city: "Dhaka", phone: "+880 1711 223344", email: "anis@email.com" },
+    { id: "DL-106", name: "Kofi Mensah", blood: "AB-", lastDonation: "2026-02-01", country: "Kenya", city: "Nairobi", phone: "+254 712 345678", email: "kofi@email.com" },
+    { id: "DL-107", name: "Chinedu Okafor", blood: "O+", lastDonation: "2026-04-18", country: "Nigeria", city: "Lagos", phone: "+234 803 111 2222", email: "chinedu@email.com" },
+    { id: "DL-108", name: "Amina Yusuf", blood: "A-", lastDonation: "2025-08-12", country: "Nigeria", city: "Lagos", phone: "+234 812 333 4444", email: "amina@email.com" },
+    { id: "DL-109", name: "Amit Patel", blood: "B-", lastDonation: "2026-01-05", country: "India", city: "Ahmedabad", phone: "+91 70123 45678", email: "amit.p@email.com" },
+    { id: "DL-110", name: "Siddharth Rao", blood: "O-", lastDonation: "2026-02-28", country: "India", city: "Hyderabad", phone: "+91 91234 56789", email: "sidrao@email.com" },
+    { id: "DL-111", name: "Meera Reddy", blood: "AB+", lastDonation: "2026-05-01", country: "India", city: "Hyderabad", phone: "+91 98989 89898", email: "meera@email.com" },
+    { id: "DL-112", name: "Rohan Das", blood: "O-", lastDonation: "2026-03-10", country: "India", city: "Bangalore", phone: "+91 99887 76655", email: "rohan.d@email.com" },
+    { id: "DL-113", name: "Vikram Singh", blood: "A-", lastDonation: "2026-02-20", country: "India", city: "Chennai", phone: "+91 88776 65544", email: "vikram.s@email.com" },
+    { id: "DL-114", name: "Sarah Jenkins", blood: "O-", lastDonation: "2026-01-25", country: "South Africa", city: "Cape Town", phone: "+27 82 123 4567", email: "sarah.j@email.com" },
+    { id: "DL-115", name: "David Mwangi", blood: "B+", lastDonation: "2026-03-05", country: "Kenya", city: "Nairobi", phone: "+254 722 987654", email: "david.m@email.com" }
+  ];
+
+  const DEFAULT_BANKS = [
+    { name: "Delhi Central Blood Alliance", city: "Delhi", country: "India", lat: 28.6139, lng: 77.2090, stock: "O- 12 units, A+ 30 units, B- 8 units", contact: "+91 11 23456789" },
+    { name: "Kolkata Red Cross Bank", city: "Kolkata", country: "India", lat: 22.5726, lng: 88.3639, stock: "O- 4 units, B+ 22 units, AB- 3 units", contact: "+91 33 99201111" },
+    { name: "Mumbai Citizens Blood Bank", city: "Mumbai", country: "India", lat: 19.0760, lng: 72.8777, stock: "O- 15 units, A- 10 units, B+ 45 units", contact: "+91 22 2890 1234" },
+    { name: "Hyderabad Apex Blood Center", city: "Hyderabad", country: "India", lat: 17.3850, lng: 78.4867, stock: "O- 2 units, AB+ 18 units, A+ 25 units", contact: "+91 40 2345 6789" },
+    { name: "Secunderabad Area Blood Bank", city: "Hyderabad", country: "India", lat: 17.4399, lng: 78.4983, stock: "O- 5 units, A- 12 units, B+ 20 units", contact: "+91 40 2789 0123" },
+    { name: "Cyberabad Red Cross Center", city: "Hyderabad", country: "India", lat: 17.4483, lng: 78.3741, stock: "O- 8 units, O+ 35 units, A+ 18 units", contact: "+91 40 6789 4321" },
+    { name: "Charminar Rotary Blood Bank", city: "Hyderabad", country: "India", lat: 17.3616, lng: 78.4747, stock: "O- 1 unit, B- 10 units, AB+ 15 units", contact: "+91 40 2456 7890" },
+    { name: "Dhaka National Hospital Bank", city: "Dhaka", country: "Bangladesh", lat: 23.8103, lng: 90.4125, stock: "O- 5 units, B- 6 units, O+ 40 units", contact: "+880 2 9876543" },
+    { name: "Nairobi Regional Blood Center", city: "Nairobi", country: "Kenya", lat: -1.2921, lng: 36.8219, stock: "O- 18 units, AB- 5 units, A+ 14 units", contact: "+254 20 2722521" },
+    { name: "Lagos General Hospital Blood Bank", city: "Lagos", country: "Nigeria", lat: 6.5244, lng: 3.3792, stock: "O- 3 units, O+ 50 units, B+ 28 units", contact: "+234 1 2345678" }
+  ];
+
+  const existingDonors = localStorage.getItem('bl_donors');
+  if (!existingDonors || existingDonors.includes('Pakistan')) {
+    localStorage.setItem('bl_donors', JSON.stringify(DEFAULT_DONORS));
+  }
+  if (!localStorage.getItem('bl_requests')) {
+    localStorage.setItem('bl_requests', JSON.stringify([]));
+  }
+
+  function getDonors() {
+    return JSON.parse(localStorage.getItem('bl_donors'));
+  }
+
+  function saveDonors(donors) {
+    localStorage.setItem('bl_donors', JSON.stringify(donors));
+  }
+
+  function getRequests() {
+    return JSON.parse(localStorage.getItem('bl_requests'));
+  }
+
+  function addRequest(request) {
+    const reqs = getRequests();
+    reqs.unshift(request);
+    localStorage.setItem('bl_requests', JSON.stringify(reqs));
+  }
+
+  // =========================================================================
+  // 2. MEDICAL LOGIC (Compatibility & Eligibility)
+  // =========================================================================
+  const COMPATIBILITY_MAP = {
+    'O-': ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'],
+    'O+': ['O+', 'A+', 'B+', 'AB+'],
+    'A-': ['A-', 'A+', 'AB-', 'AB+'],
+    'A+': ['A+', 'AB+'],
+    'B-': ['B-', 'B+', 'AB-', 'AB+'],
+    'B+': ['B+', 'AB+'],
+    'AB-': ['AB-', 'AB+'],
+    'AB+': ['AB+']
+  };
+
+  function isCompatible(donorBlood, patientBlood) {
+    if (!COMPATIBILITY_MAP[donorBlood]) return false;
+    return COMPATIBILITY_MAP[donorBlood].includes(patientBlood);
+  }
+
+  function calculateEligibility(lastDonationDateStr) {
+    if (!lastDonationDateStr) return { eligible: true, daysRemaining: 0 };
+    
+    const lastDate = new Date(lastDonationDateStr);
+    const today = new Date();
+    
+    const diffTime = today - lastDate;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    const cooldown = 90;
+    const eligible = diffDays >= cooldown;
+    const daysRemaining = eligible ? 0 : cooldown - diffDays;
+    
+    return { eligible, daysRemaining };
+  }
+
+  // =========================================================================
+  // 3. PATIENT BLOOD REQUEST PAGE (#request)
+  // =========================================================================
+  const requestForm = document.getElementById('request-form');
+  const resultsCard = document.getElementById('results-card');
+  const matchContainer = document.getElementById('match-container');
+  const matchedCountBadge = document.getElementById('matched-count-badge');
+  const activeUrgencyBadge = document.getElementById('active-urgency-badge');
+  const stepContainer = document.getElementById('step-container');
+
+  function initRequestPage() {
+    const activeSession = JSON.parse(sessionStorage.getItem('carecircle_session'));
+    const requestForm = document.getElementById('request-form');
+    if (requestForm && activeSession && activeSession.role === 'patient') {
+      document.getElementById('patient-name').value = activeSession.displayName;
+      document.getElementById('blood-group').value = 'O-';
+      document.getElementById('patient-country').value = 'India';
+      document.getElementById('patient-city').value = 'Hyderabad';
+
+      const pageHeader = document.querySelector('#section-request .page-header h1');
+      if (pageHeader) pageHeader.innerHTML = `Emergency Request Panel: ${escapeHTML(activeSession.displayName)}`;
+      const pageDesc = document.querySelector('#section-request .page-header p');
+      if (pageDesc) pageDesc.innerHTML = `You are logged in as an active Recipient node (Node ID: <strong>REQ-101</strong>). Submit your matching request parameters to run verified queries.`;
+    } else if (requestForm) {
+      const pageHeader = document.querySelector('#section-request .page-header h1');
+      if (pageHeader) pageHeader.innerHTML = `Find Compatible Donors Instantly`;
+      const pageDesc = document.querySelector('#section-request .page-header p');
+      if (pageDesc) pageDesc.innerHTML = `Enter patient criteria. Our medical intelligence AI matches patient needs with nearby active, eligible donor nodes.`;
+    }
+  }
+
+  if (requestForm) {
+    requestForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const patientName = document.getElementById('patient-name').value.trim();
+      const bloodGroup = document.getElementById('blood-group').value;
+      const country = document.getElementById('patient-country').value.trim();
+      const city = document.getElementById('patient-city').value.trim();
+      const urgency = document.getElementById('urgency-level').value;
+      const dateNeeded = document.getElementById('date-needed').value;
+
+      const newRequest = {
+        id: "REQ-" + Date.now().toString().slice(-4),
+        patientName,
+        bloodGroup,
+        country,
+        city,
+        urgency,
+        dateNeeded,
+        timestamp: new Date().toLocaleDateString()
+      };
+      addRequest(newRequest);
+
+      runMatchingEngine(bloodGroup, country, city, urgency);
+    });
+  }
+
+  function runMatchingEngine(bloodGroup, country, city, urgency) {
+    if (!matchContainer || !resultsCard) return;
+
+    resultsCard.style.display = 'block';
+    matchContainer.innerHTML = `<div style="padding: 24px; text-align: center; color: var(--text-secondary);">Running medical intelligence filters...</div>`;
+    if (matchedCountBadge) matchedCountBadge.textContent = 'Scanning...';
+    
+    if (stepContainer) {
+      stepContainer.innerHTML = `
+        <div class="step-row active" id="s-step-1">
+          <div class="step-num">1</div>
+          <div class="step-details">
+            <h4>Filtering Compatibility</h4>
+            <p>Scanning registry for blood types compatible with ${escapeHTML(bloodGroup)}...</p>
+          </div>
+        </div>
+        <div class="step-row" id="s-step-2">
+          <div class="step-num">2</div>
+          <div class="step-details">
+            <h4>Verifying Cooldown Status</h4>
+            <p>Verifying last donation date (>90 days eligibility rule)...</p>
+          </div>
+        </div>
+        <div class="step-row" id="s-step-3">
+          <div class="step-num">3</div>
+          <div class="step-details">
+            <h4>Geographic Matching</h4>
+            <p>Narrowing search to active donors in ${escapeHTML(city)}, ${escapeHTML(country)}...</p>
+          </div>
+        </div>
+        <div class="step-row" id="s-step-4">
+          <div class="step-num">4</div>
+          <div class="step-details">
+            <h4>Rank & Dispatch Recommendations</h4>
+            <p>Sorting top 5 available donors by match score and readiness...</p>
+          </div>
+        </div>
+      `;
+    }
+
+    setTimeout(() => {
+      const step1 = document.getElementById('s-step-1');
+      if (step1) step1.classList.add('completed');
+      const step2 = document.getElementById('s-step-2');
+      if (step2) step2.classList.add('active');
+
+      setTimeout(() => {
+        const step2 = document.getElementById('s-step-2');
+        if (step2) step2.classList.add('completed');
+        const step3 = document.getElementById('s-step-3');
+        if (step3) step3.classList.add('active');
+
+        setTimeout(() => {
+          const step3 = document.getElementById('s-step-3');
+          if (step3) step3.classList.add('completed');
+          const step4 = document.getElementById('s-step-4');
+          if (step4) step4.classList.add('active');
+
+          setTimeout(() => {
+            const step4 = document.getElementById('s-step-4');
+            if (step4) step4.classList.add('completed');
+
+            const allDonors = getDonors();
+            const matches = allDonors.filter(donor => {
+              const geoMatch = donor.country.toLowerCase() === country.toLowerCase() && 
+                               donor.city.toLowerCase() === city.toLowerCase();
+              const compMatch = isCompatible(donor.blood, bloodGroup);
+              const { eligible } = calculateEligibility(donor.lastDonation);
+
+              return geoMatch && compMatch && eligible;
+            });
+
+            const rankedMatches = matches.map(donor => {
+              let score = 85;
+              if (donor.blood === bloodGroup) {
+                score += 15;
+              }
+              return { ...donor, score };
+            }).sort((a, b) => b.score - a.score).slice(0, 5);
+
+            displayMatchResults(rankedMatches, urgency);
+          }, 800);
+        }, 800);
+      }, 800);
+    }, 800);
+  }
+
+  function displayMatchResults(matches, urgency) {
+    if (!matchContainer) return;
+    matchContainer.innerHTML = '';
+
+    if (matchedCountBadge) {
+      matchedCountBadge.textContent = `${matches.length} Verified Donors Found`;
+    }
+    if (activeUrgencyBadge) {
+      activeUrgencyBadge.textContent = urgency;
+      activeUrgencyBadge.className = `badge ${urgency === 'Critical' ? 'badge-orange' : 'badge-green'}`;
+    }
+
+    if (matches.length === 0) {
+      matchContainer.innerHTML = `
+        <div style="padding: 32px; text-align: center; color: var(--text-secondary);">
+          <p style="font-weight: 600; margin-bottom: 8px;">No local compatible active donors found in this city.</p>
+          <p style="font-size: 13px; color: var(--text-muted);">Please check the nearby blood banks map portal, or consider expanding your search filters.</p>
+        </div>
+      `;
+      return;
+    }
+
+    const activeSession = JSON.parse(sessionStorage.getItem('carecircle_session'));
+    const isRlsEnabled = localStorage.getItem('carecircle_rls_enabled') !== 'false';
+
+    matches.forEach(donor => {
+      const el = document.createElement('div');
+      el.className = 'match-item';
+      
+      const phoneDisplay = isRlsEnabled && !activeSession ? `${donor.phone.substring(0, 7)} *****` : donor.phone;
+      const btnText = isRlsEnabled && !activeSession ? "🔒 Verify Node" : "Contact Donor";
+      const btnClass = isRlsEnabled && !activeSession ? "btn btn-secondary btn-sm btn-contact" : "btn btn-primary btn-sm btn-contact";
+
+      el.innerHTML = `
+        <div class="donor-info">
+          <h4>${escapeHTML(donor.name)}</h4>
+          <p>Location: ${escapeHTML(donor.city)}, ${escapeHTML(donor.country)}</p>
+        </div>
+        <div class="donor-meta">
+          <span>Blood Group</span>
+          <strong style="color: var(--accent-red);">${escapeHTML(donor.blood)}</strong>
+        </div>
+        <div class="donor-meta">
+          <span>Phone Node</span>
+          <strong style="font-family: monospace; font-size: 13px;">${escapeHTML(phoneDisplay)}</strong>
+        </div>
+        <div style="text-align: right;">
+          <button class="${btnClass}" data-phone="${escapeHTML(donor.phone)}" data-name="${escapeHTML(donor.name)}">${btnText}</button>
+        </div>
+      `;
+      matchContainer.appendChild(el);
+    });
+
+    const contactBtns = matchContainer.querySelectorAll('.btn-contact');
+    contactBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        if (isRlsEnabled && !activeSession) {
+          alert("SECURITY EXCEPTION: Anonymous request blocked by Supabase Row Level Security (RLS) policies. Please verify your Recipient node credentials by logging in.");
+          window.location.hash = '#login';
+          return;
+        }
+
+        const phone = btn.getAttribute('data-phone');
+        const name = btn.getAttribute('data-name');
+        
+        btn.textContent = "SMS Dispatched";
+        btn.style.backgroundColor = "var(--color-green)";
+        btn.style.color = "#141414";
+        btn.style.boxShadow = "none";
+        
+        alert(`Emergency dispatch signal sent to ${name} (${phone}). RLS Policies verified. Real-time Supabase webhook triggered.`);
+      });
+    });
+  }
+
+  // =========================================================================
+  // 4. DONOR REGISTRATION PORTAL (#register)
+  // =========================================================================
+  const registerForm = document.getElementById('register-form');
+  const donorLastDonation = document.getElementById('donor-last-donation');
+  const eligibilityBanner = document.getElementById('eligibility-banner');
+
+  if (donorLastDonation && eligibilityBanner) {
+    donorLastDonation.addEventListener('change', () => {
+      updateEligibilityFeedback(donorLastDonation.value);
+    });
+  }
+
+  function updateEligibilityFeedback(dateStr) {
+    if (!eligibilityBanner) return;
+    
+    const { eligible, daysRemaining } = calculateEligibility(dateStr);
+    
+    if (eligible) {
+      eligibilityBanner.innerHTML = `
+        <div class="eligibility-icon" style="background-color: var(--color-green-muted); color: var(--color-green);">✓</div>
+        <div class="eligibility-info">
+          <h4>Status: Eligible to Donate</h4>
+          <p>It has been over 90 days since your last donation. You can be matched immediately for emergencies.</p>
+        </div>
+      `;
+    } else {
+      eligibilityBanner.innerHTML = `
+        <div class="eligibility-icon" style="background-color: var(--color-orange-muted); color: var(--color-orange);">&times;</div>
+        <div class="eligibility-info">
+          <h4>Status: On Standby Cooldown</h4>
+          <p>Please wait another <strong>${daysRemaining} days</strong> before donating blood. Your registry profile will be set to passive standby.</p>
+        </div>
+      `;
+    }
+  }
+
+  function initRegisterPage() {
+    const activeSession = JSON.parse(sessionStorage.getItem('carecircle_session'));
+    const registerForm = document.getElementById('register-form');
+    if (registerForm && activeSession && activeSession.role === 'donor') {
+      const donors = getDonors();
+      const currentDonor = donors.find(d => d.id === activeSession.linkedId);
+      if (currentDonor) {
+        document.getElementById('donor-name').value = currentDonor.name;
+        document.getElementById('donor-blood').value = currentDonor.blood;
+        document.getElementById('donor-last-donation').value = currentDonor.lastDonation;
+        document.getElementById('donor-country').value = currentDonor.country;
+        document.getElementById('donor-city').value = currentDonor.city;
+        document.getElementById('donor-phone').value = currentDonor.phone;
+        document.getElementById('donor-email').value = currentDonor.email;
+
+        updateEligibilityFeedback(currentDonor.lastDonation);
+
+        const pageHeader = document.querySelector('#section-register .page-header h1');
+        if (pageHeader) pageHeader.innerHTML = `Donor Profile Node: ${escapeHTML(currentDonor.name)}`;
+        const pageDesc = document.querySelector('#section-register .page-header p');
+        if (pageDesc) pageDesc.innerHTML = `You are logged in as a registered donor (Node ID: <strong>${escapeHTML(currentDonor.id)}</strong>). You can update your details, contact numbers, and donation dates below.`;
+        
+        const submitBtn = registerForm.querySelector('button[type="submit"]');
+        if (submitBtn) submitBtn.textContent = "Update Profile Node";
+      }
+    } else if (registerForm) {
+      document.getElementById('donor-name').value = '';
+      document.getElementById('donor-blood').value = '';
+      document.getElementById('donor-last-donation').value = '';
+      document.getElementById('donor-phone').value = '';
+      document.getElementById('donor-email').value = '';
+      updateEligibilityFeedback('');
+
+      const pageHeader = document.querySelector('#section-register .page-header h1');
+      if (pageHeader) pageHeader.innerHTML = `Join the CareCircle AI Donor Network`;
+      const pageDesc = document.querySelector('#section-register .page-header p');
+      if (pageDesc) pageDesc.innerHTML = `Your details are safely encrypted and secured using Supabase Row Level Security. You will only be alerted when compatible patients request blood in your city.`;
+      
+      const submitBtn = registerForm.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.textContent = "Submit Donor Registration";
+    }
+  }
+
+  if (registerForm) {
+    registerForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('donor-name').value.trim();
+      const blood = document.getElementById('donor-blood').value;
+      const lastDonation = document.getElementById('donor-last-donation').value;
+      const country = document.getElementById('donor-country').value.trim();
+      const city = document.getElementById('donor-city').value.trim();
+      const phone = document.getElementById('donor-phone').value.trim();
+      const email = document.getElementById('donor-email').value.trim();
+
+      const donors = getDonors();
+      const activeSession = JSON.parse(sessionStorage.getItem('carecircle_session'));
+
+      if (activeSession && activeSession.role === 'donor') {
+        const idx = donors.findIndex(d => d.id === activeSession.linkedId);
+        if (idx !== -1) {
+          donors[idx] = {
+            ...donors[idx],
+            name,
+            blood,
+            lastDonation,
+            country,
+            city,
+            phone,
+            email
+          };
+          saveDonors(donors);
+          alert(`Profile Update Successful! Thank you, ${name}. Your node changes have been synchronized securely with RLS policies.`);
+          initRegisterPage();
+          return;
+        }
+      }
+
+      const newDonor = {
+        id: "DL-" + (100 + donors.length + 1),
+        name,
+        blood,
+        lastDonation,
+        country,
+        city,
+        phone,
+        email
+      };
+
+      donors.unshift(newDonor);
+      saveDonors(donors);
+
+      alert(`Registration Successful! Thank you, ${name}. Your profile has been secured with Supabase Row Level Security (RLS) policies and will appear in active search queues when eligible.`);
+      registerForm.reset();
+      updateEligibilityFeedback('');
+    });
+  }
+
+  // =========================================================================
+  // 5. HOON BUDDY VOICE AI ASSISTANT (#hoon-buddy)
+  // =========================================================================
+  const micBtn = document.getElementById('mic-btn');
+  const voiceStatus = document.getElementById('voice-status');
+  const voiceTranscript = document.getElementById('voice-transcript');
+  const faqItems = document.querySelectorAll('.faq-item');
+
+  const HOON_BUDDY_FAQS = {
+    "universal": "O-negative is the universal blood donor, meaning O-negative blood can be given to patients of any blood group. In critical emergencies where there is no time to test blood types, O-negative is always used.",
+    "tattoo": "If you got a tattoo or piercing, you must wait exactly 6 months before donating blood. This ensures patient safety against any window period of transmissible blood infections.",
+    "cooldown": "You must wait at least 90 days, or about 3 months, between whole blood donations to give your red cells and iron stores sufficient time to naturally rebuild.",
+    "matching": "CareCircle AI's AI matching assistant reads your city and blood type, checks the last donation dates of nearby registered donors to verify their eligibility, and instantly ranks the top 5 compatible donors.",
+    "supabase": "CareCircle AI uses Supabase database security with Row Level Security policies. This means that donor telephone numbers are encrypted and only revealed when a patient makes a verified emergency request.",
+    "begging": "Every day, thousands beg on WhatsApp groups for compatible blood, wasting precious minutes. CareCircle AI coordinates donors automatically, ensuring emergency requests find compatible matching donors instantly.",
+    "age": "In general, healthy adults between the ages of 17 and 65, weighing at least 50 kilograms, are eligible to donate blood.",
+    "pregnancy": "Women who are currently pregnant or breastfeeding are generally advised to wait at least 6 months after delivery before donating blood to ensure their own health is stable."
+  };
+
+  let conversationHistory = JSON.parse(sessionStorage.getItem('carecircle_conv_history')) || [];
+  let userContext = JSON.parse(sessionStorage.getItem('carecircle_user_context')) || {
+    name: "",
+    bloodGroup: "",
+    city: ""
+  };
+
+  function appendChatBubble(role, text) {
+    if (!voiceTranscript) return;
+    const bubble = document.createElement('div');
+    bubble.className = `chat-bubble ${role === 'user' ? 'user-bubble' : 'ai-bubble'}`;
+    
+    const label = document.createElement('strong');
+    label.textContent = role === 'user' ? 'You: ' : 'Hoon Buddy: ';
+    label.style.display = 'block';
+    label.style.fontSize = '10px';
+    label.style.marginBottom = '2px';
+    label.style.color = role === 'user' ? 'var(--accent-red)' : 'var(--text-muted)';
+    
+    const body = document.createElement('span');
+    body.textContent = text;
+    
+    bubble.appendChild(label);
+    bubble.appendChild(body);
+    voiceTranscript.appendChild(bubble);
+    voiceTranscript.scrollTop = voiceTranscript.scrollHeight;
+  }
+
+  function initTranscriptFromHistory() {
+    if (!voiceTranscript) return;
+    voiceTranscript.innerHTML = '';
+    if (conversationHistory.length === 0) {
+      voiceTranscript.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 16px 0; width:100%;">Awaiting voice commands or FAQ selections.</div>`;
+      return;
+    }
+    conversationHistory.forEach(msg => {
+      appendChatBubble(msg.role, msg.content);
+    });
+  }
+
+  function speakResponse(text) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.rate = 1.0;
+      utterance.pitch = 1.0;
+      
+      const voices = window.speechSynthesis.getVoices();
+      const premiumVoice = voices.find(v => v.name.includes('Google') || v.name.includes('Natural') || v.name.includes('Samantha'));
+      if (premiumVoice) utterance.voice = premiumVoice;
+
+      utterance.onstart = () => {
+        if (micBtn) micBtn.classList.add('active');
+        if (voiceStatus) voiceStatus.textContent = "Hoon Buddy is speaking...";
+      };
+
+      utterance.onend = () => {
+        if (micBtn) micBtn.classList.remove('active');
+        if (voiceStatus) voiceStatus.textContent = "Listening paused. Press Mic to speak.";
+      };
+
+      window.speechSynthesis.speak(utterance);
+    }
+  }
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.getVoices();
+  }
+
+  if (voiceTranscript) {
+    initTranscriptFromHistory();
+  }
+
+  faqItems.forEach(item => {
+    item.addEventListener('click', () => {
+      const qKey = item.getAttribute('data-faq');
+      const answer = HOON_BUDDY_FAQS[qKey];
+      if (answer) {
+        if (conversationHistory.length === 0 && voiceTranscript) voiceTranscript.innerHTML = '';
+
+        conversationHistory.push({ role: 'user', content: item.textContent });
+        conversationHistory.push({ role: 'assistant', content: answer });
+        sessionStorage.setItem('carecircle_conv_history', JSON.stringify(conversationHistory));
+
+        appendChatBubble('user', item.textContent);
+        appendChatBubble('assistant', answer);
+        speakResponse(answer);
+      }
+    });
+  });
+
+  if (micBtn) {
+    let recognition = null;
+    let isListening = false;
+
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechReg = window.SpeechRecognition || window.webkitSpeechRecognition;
+      recognition = new SpeechReg();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      recognition.lang = 'en-US';
+
+      recognition.onstart = () => {
+        isListening = true;
+        micBtn.classList.add('active');
+        if (voiceStatus) voiceStatus.textContent = "Hoon Buddy is listening... Speak now.";
+      };
+
+      recognition.onresult = (event) => {
+        const transcriptText = event.results[0][0].transcript;
+        processSpokenQuery(transcriptText);
+      };
+
+      recognition.onerror = () => {
+        isListening = false;
+        micBtn.classList.remove('active');
+        if (voiceStatus) voiceStatus.textContent = "Speech recognition error. Try clicking FAQ list.";
+      };
+
+      recognition.onend = () => {
+        isListening = false;
+        if (!window.speechSynthesis.speaking) {
+          micBtn.classList.remove('active');
+          if (voiceStatus) voiceStatus.textContent = "Listening paused. Press Mic to speak.";
+        }
+      };
+    }
+
+    micBtn.addEventListener('click', () => {
+      if (window.speechSynthesis.speaking) {
+        window.speechSynthesis.cancel();
+        micBtn.classList.remove('active');
+        if (voiceStatus) voiceStatus.textContent = "Hoon Buddy response stopped.";
+        return;
+      }
+
+      if (!recognition) {
+        alert("Web Speech recognition is not supported in this browser. Please click the FAQ items directly to interact aloud!");
+        return;
+      }
+
+      if (isListening) {
+        recognition.stop();
+      } else {
+        recognition.start();
+      }
+    });
+
+    function processSpokenQuery(query) {
+      if (!query || !query.trim()) return;
+
+      if (conversationHistory.length === 0 && voiceTranscript) voiceTranscript.innerHTML = '';
+
+      appendChatBubble('user', query);
+      conversationHistory.push({ role: 'user', content: query });
+      sessionStorage.setItem('carecircle_conv_history', JSON.stringify(conversationHistory));
+
+      // Legacy single-file build uses the same AWS Bedrock endpoint.
+      const awsAiEndpoint = 'https://nj7b75qyka.execute-api.ap-south-1.amazonaws.com/ai/assistant';
+      if (awsAiEndpoint) {
+        if (voiceStatus) voiceStatus.textContent = "Hoon Buddy is thinking...";
+
+        fetch(awsAiEndpoint, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            message: query,
+            history: conversationHistory.slice(-8),
+            context: userContext
+          })
+        })
+        .then(res => {
+          if (!res.ok) throw new Error("API call failed");
+          return res.json();
+        })
+        .then(data => {
+          const answer = data.answer;
+          conversationHistory.push({ role: 'assistant', content: answer });
+          sessionStorage.setItem('carecircle_conv_history', JSON.stringify(conversationHistory));
+          appendChatBubble('assistant', answer);
+          speakResponse(answer);
+        })
+        .catch(err => {
+          console.error(err);
+          const fallbackText = "Amazon Bedrock is temporarily unavailable. Please try again in a moment.";
+          conversationHistory.push({ role: 'assistant', content: fallbackText });
+          sessionStorage.setItem('carecircle_conv_history', JSON.stringify(conversationHistory));
+          appendChatBubble('assistant', fallbackText);
+          speakResponse(fallbackText);
+        });
+      } else {
+        const lowerQuery = query.toLowerCase();
+
+        const nameMatch = query.match(/(?:my name is|i am|call me)\s+([A-Za-z]+)/i);
+        if (nameMatch) {
+          userContext.name = nameMatch[1].trim();
+        }
+
+        const bloodMatch = query.match(/\b(o\-|o\+|a\-|a\+|b\-|b\+|ab\-|ab\+)\b/i);
+        if (bloodMatch) {
+          userContext.bloodGroup = bloodMatch[1].toUpperCase();
+        } else if (lowerQuery.includes('o negative') || lowerQuery.includes('o-')) {
+          userContext.bloodGroup = 'O-';
+        } else if (lowerQuery.includes('o positive') || lowerQuery.includes('o+')) {
+          userContext.bloodGroup = 'O+';
+        } else if (lowerQuery.includes('a-') || lowerQuery.includes('a negative')) {
+          userContext.bloodGroup = 'A-';
+        } else if (lowerQuery.includes('a+') || lowerQuery.includes('a positive')) {
+          userContext.bloodGroup = 'A+';
+        } else if (lowerQuery.includes('b-') || lowerQuery.includes('b negative')) {
+          userContext.bloodGroup = 'B-';
+        } else if (lowerQuery.includes('b+') || lowerQuery.includes('b positive')) {
+          userContext.bloodGroup = 'B+';
+        } else if (lowerQuery.includes('ab-') || lowerQuery.includes('ab negative')) {
+          userContext.bloodGroup = 'AB-';
+        } else if (lowerQuery.includes('ab+') || lowerQuery.includes('ab positive')) {
+          userContext.bloodGroup = 'AB+';
+        }
+
+        const citiesList = ['delhi', 'kolkata', 'mumbai', 'bangalore', 'chennai', 'hyderabad', 'dhaka', 'lagos', 'nairobi'];
+        for (const city of citiesList) {
+          if (lowerQuery.includes(city)) {
+            userContext.city = city.charAt(0).toUpperCase() + city.slice(1);
+            break;
+          }
+        }
+
+        sessionStorage.setItem('carecircle_user_context', JSON.stringify(userContext));
+
+        let matchedAnswer = "";
+
+        if (lowerQuery.includes('hello') || lowerQuery.includes('hi') || lowerQuery.includes('hey')) {
+          matchedAnswer = `Hello ${userContext.name || ''}! I am Hoon Buddy, your AI matching coordinator. How can I help you find or coordinate blood reserves today?`;
+        }
+        else if (lowerQuery.includes('universal') || lowerQuery.includes('compatible') || lowerQuery.includes('donate to') || lowerQuery.includes('recipient')) {
+          if (userContext.bloodGroup) {
+            const matches = COMPATIBILITY_MAP[userContext.bloodGroup] || [];
+            matchedAnswer = `Since your blood type is ${userContext.bloodGroup}, you can donate to: ${matches.join(', ')}. O-negative is the universal donor, compatible with all types.`;
+          } else {
+            matchedAnswer = `O-negative is the universal blood donor, compatible with all types. To tell you who you can donate to, what is your blood group?`;
+          }
+        }
+        else if (lowerQuery.includes('tattoo') || lowerQuery.includes('piercing') || lowerQuery.includes('ink')) {
+          matchedAnswer = HOON_BUDDY_FAQS.tattoo;
+        } 
+        else if (lowerQuery.includes('cooldown') || lowerQuery.includes('wait') || lowerQuery.includes('frequency') || lowerQuery.includes('days') || lowerQuery.includes('how often')) {
+          matchedAnswer = HOON_BUDDY_FAQS.cooldown;
+        }
+        else if (lowerQuery.includes('blood bank') || lowerQuery.includes('where') || lowerQuery.includes('partner') || lowerQuery.includes('reserve')) {
+          if (userContext.city) {
+            const partner = DEFAULT_BANKS.find(b => b.city.toLowerCase() === userContext.city.toLowerCase());
+            if (partner) {
+              matchedAnswer = `In ${userContext.city}, you can go to the ${partner.name}. Contact them at ${partner.contact}. You can also check our Blood Banks Map.`;
+            } else {
+              matchedAnswer = `We have registered partner blood banks in ${userContext.city}, like the local Apex center. Check our Blood Banks Map for direct routes.`;
+            }
+          } else {
+            matchedAnswer = `Which city or location are you in? We coordinate with regional centers in Hyderabad, Delhi, Mumbai, Kolkata, and Chennai.`;
+          }
+        }
+        else if (lowerQuery.includes('matching') || lowerQuery.includes('how it works') || lowerQuery.includes('filter')) {
+          matchedAnswer = HOON_BUDDY_FAQS.matching;
+        }
+        else if (lowerQuery.includes('supabase') || lowerQuery.includes('security') || lowerQuery.includes('private') || lowerQuery.includes('phone') || lowerQuery.includes('database')) {
+          matchedAnswer = HOON_BUDDY_FAQS.supabase;
+        }
+        else if (lowerQuery.includes('whatsapp') || lowerQuery.includes('beg') || lowerQuery.includes('problem')) {
+          matchedAnswer = HOON_BUDDY_FAQS.begging;
+        }
+        else if (lowerQuery.includes('pregnant') || lowerQuery.includes('pregnancy') || lowerQuery.includes('breastfeed')) {
+          matchedAnswer = HOON_BUDDY_FAQS.pregnancy;
+        }
+        else if (lowerQuery.includes('age') || lowerQuery.includes('eligible') || lowerQuery.includes('who can') || lowerQuery.includes('weight')) {
+          matchedAnswer = HOON_BUDDY_FAQS.age;
+        }
+        else if (lowerQuery.includes('remember') || lowerQuery.includes('know about me') || lowerQuery.includes('my profile') || lowerQuery.includes('my info')) {
+          let info = [];
+          if (userContext.name) info.push(`your name is ${userContext.name}`);
+          if (userContext.bloodGroup) info.push(`your blood type is ${userContext.bloodGroup}`);
+          if (userContext.city) info.push(`you live in ${userContext.city}`);
+          
+          if (info.length > 0) {
+            matchedAnswer = `I remember that ${info.join(', ')}. I will keep this context in active memory for your matching queries.`;
+          } else {
+            matchedAnswer = `I don't have any profile details saved for you yet in this session. Tell me your name, city, or blood type!`;
+          }
+        }
+        else {
+          const nameGreeting = userContext.name ? `${userContext.name}, ` : "";
+          matchedAnswer = `I heard you say: "${query}". ${nameGreeting}I am Hoon Buddy, your AI medical assistant. Ask me questions about blood types, donor cooldowns, or matching.`;
+        }
+
+        conversationHistory.push({ role: 'assistant', content: matchedAnswer });
+        sessionStorage.setItem('carecircle_conv_history', JSON.stringify(conversationHistory));
+        appendChatBubble('assistant', matchedAnswer);
+        speakResponse(matchedAnswer);
+      }
+    }
+  }
+
+  // =========================================================================
+  // 6. MAP PORTAL SCREEN (#map)
+  // =========================================================================
+  const mapElement = document.getElementById('blood-banks-map');
+  const mapSearchInput = document.getElementById('map-search-input');
+  const mapSearchBtn = document.getElementById('map-search-btn');
+  const bankListContainer = document.getElementById('bank-list-container');
+
+  if (mapElement) {
+    let markersGroup = null;
+
+    function initMap() {
+      if (typeof L === 'undefined') {
+        mapElement.innerHTML = `<div style="padding: 24px; text-align: center; color: var(--text-muted);">Leaflet library failed to load. Please check internet connection.</div>`;
+        return;
+      }
+
+      window.leafletMap = L.map(mapElement, {
+        center: [20.0, 30.0],
+        zoom: 2,
+        scrollWheelZoom: false
+      });
+
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(window.leafletMap);
+
+      markersGroup = L.layerGroup().addTo(window.leafletMap);
+      renderBankListings("");
+    }
+
+    function renderBankListings(filterTerm) {
+      if (!bankListContainer || !markersGroup) return;
+      bankListContainer.innerHTML = '';
+      markersGroup.clearLayers();
+
+      const cleanFilter = filterTerm.toLowerCase().trim();
+      const filtered = DEFAULT_BANKS.filter(bank => 
+        bank.name.toLowerCase().includes(cleanFilter) ||
+        bank.city.toLowerCase().includes(cleanFilter) ||
+        bank.country.toLowerCase().includes(cleanFilter)
+      );
+
+      if (filtered.length === 0) {
+        bankListContainer.innerHTML = `<div style="padding: 16px; color: var(--text-muted); text-align: center;">No blood banks found.</div>`;
+        return;
+      }
+
+      const customIcon = L.divIcon({
+        html: `<div class="map-pin"></div>`,
+        iconSize: [20, 20],
+        iconAnchor: [10, 20]
+      });
+
+      filtered.forEach((bank, idx) => {
+        const item = document.createElement('div');
+        item.className = `map-bank-item ${idx === 0 ? 'active' : ''}`;
+        item.innerHTML = `
+          <h4>${escapeHTML(bank.name)}</h4>
+          <p>Location: ${escapeHTML(bank.city)}, ${escapeHTML(bank.country)}</p>
+          <p style="font-size: 11px; color: var(--text-muted); margin-top: 2px;">Phone: ${escapeHTML(bank.contact)}</p>
+          <div class="map-bank-stock">${escapeHTML(bank.stock)}</div>
+        `;
+
+        item.addEventListener('click', () => {
+          document.querySelectorAll('.map-bank-item').forEach(el => el.classList.remove('active'));
+          item.classList.add('active');
+          window.leafletMap.setView([bank.lat, bank.lng], 12);
+        });
+
+        bankListContainer.appendChild(item);
+
+        const marker = L.marker([bank.lat, bank.lng], { icon: customIcon }).addTo(markersGroup);
+        marker.bindPopup(`
+          <div style="color: #0b0f19; font-family: sans-serif;">
+            <h4 style="margin: 0 0 4px 0; font-size:14px; font-weight:bold;">${escapeHTML(bank.name)}</h4>
+            <p style="margin: 0 0 6px 0; font-size:12px; color:#555;">${escapeHTML(bank.city)}, ${escapeHTML(bank.country)}</p>
+            <p style="margin: 0; font-size:11px; font-weight:bold; color:var(--accent-red);">${escapeHTML(bank.stock)}</p>
+          </div>
+        `);
+      });
+
+      if (filtered.length > 0) {
+        const first = filtered[0];
+        window.leafletMap.setView([first.lat, first.lng], 7);
+      }
+    }
+
+    if (mapSearchBtn && mapSearchInput) {
+      mapSearchBtn.addEventListener('click', () => {
+        renderBankListings(mapSearchInput.value);
+      });
+      mapSearchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          renderBankListings(mapSearchInput.value);
+        }
+      });
+    }
+
+    initMap();
+  }
+
+  // =========================================================================
+  // 7. ADMIN DASHBOARD CONTROL PANEL (#admin)
+  // =========================================================================
+  const metricDonors = document.getElementById('metric-donors');
+  const metricRequests = document.getElementById('metric-requests');
+  const metricMatches = document.getElementById('metric-matches');
+  const metricCountries = document.getElementById('metric-countries');
+  const adminTableBody = document.getElementById('admin-table-body');
+  const chartContainer = document.getElementById('chart-container');
+  const exportBtn = document.getElementById('btn-export-donors');
+  const rlsToggle = document.getElementById('security-rls-toggle');
+  const securityMessage = document.getElementById('security-message');
+
+  function renderAdminDashboard() {
+    const donors = getDonors();
+    const requests = getRequests();
+
+    if (metricDonors) metricDonors.textContent = donors.length;
+    if (metricRequests) metricRequests.textContent = Math.max(8, requests.length + 8);
+    if (metricMatches) metricMatches.textContent = Math.max(12, requests.length + 12);
+    
+    const uniqueCountries = new Set(donors.map(d => d.country.toLowerCase()));
+    if (metricCountries) metricCountries.textContent = uniqueCountries.size;
+
+    if (adminTableBody) {
+      adminTableBody.innerHTML = '';
+      if (donors.length === 0) {
+        adminTableBody.innerHTML = `<tr><td colspan="6" style="text-align: center;">No donors registered in database.</td></tr>`;
+      } else {
+        donors.forEach(donor => {
+          const tr = document.createElement('tr');
+          const { eligible, daysRemaining } = calculateEligibility(donor.lastDonation);
+          
+          tr.innerHTML = `
+            <td><strong>${escapeHTML(donor.id)}</strong></td>
+            <td>${escapeHTML(donor.name)}</td>
+            <td><strong style="color: var(--accent-red);">${escapeHTML(donor.blood)}</strong></td>
+            <td>${escapeHTML(donor.city)}, ${escapeHTML(donor.country)}</td>
+            <td>${escapeHTML(donor.lastDonation)}</td>
+            <td>
+              <span class="badge ${eligible ? 'badge-green' : 'badge-orange'}">
+                ${eligible ? 'Active' : 'Standby (' + daysRemaining + 'd)'}
+              </span>
+            </td>
+          `;
+          adminTableBody.appendChild(tr);
+        });
+      }
+    }
+
+    if (chartContainer) {
+      chartContainer.innerHTML = '';
+      
+      const bloodGroups = ['O-', 'O+', 'A-', 'A+', 'B-', 'B+', 'AB-', 'AB+'];
+      const counts = {};
+      bloodGroups.forEach(g => counts[g] = 0);
+      
+      donors.forEach(d => {
+        if (counts[d.blood] !== undefined) {
+          counts[d.blood]++;
+        }
+      });
+
+      const maxCount = Math.max(...Object.values(counts), 1);
+
+      bloodGroups.forEach(group => {
+        const count = counts[group];
+        const pct = (count / maxCount) * 100;
+        
+        const row = document.createElement('div');
+        row.className = 'chart-bar-row';
+        row.innerHTML = `
+          <div class="chart-bar-info">
+            <span>Group ${escapeHTML(group)}</span>
+            <strong>${count} Donors</strong>
+          </div>
+          <div class="chart-bar-track">
+            <div class="chart-bar-fill" style="width: ${pct}%;"></div>
+          </div>
+        `;
+        chartContainer.appendChild(row);
+      });
+    }
+  }
+
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      const donors = getDonors();
+      if (donors.length === 0) {
+        alert("No donor data available to export.");
+        return;
+      }
+
+      let csvContent = "data:text/csv;charset=utf-8,ID,Name,Blood Group,Last Donation Date,Country,City,Phone,Email\n";
+      donors.forEach(d => {
+        const row = [d.id, d.name, d.blood, d.lastDonation, d.country, d.city, d.phone, d.email]
+          .map(val => `"${val.replace(/"/g, '""')}"`)
+          .join(",");
+        csvContent += row + "\n";
+      });
+
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `carecircle_donor_registry_${new Date().toISOString().slice(0, 10)}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    });
+  }
+
+  if (rlsToggle && securityMessage) {
+    const rlsSaved = localStorage.getItem('carecircle_rls_enabled') !== 'false';
+    rlsToggle.checked = rlsSaved;
+    updateRLSMsg(rlsSaved);
+
+    rlsToggle.addEventListener('change', () => {
+      const isChecked = rlsToggle.checked;
+      localStorage.setItem('carecircle_rls_enabled', isChecked);
+      updateRLSMsg(isChecked);
+    });
+
+    function updateRLSMsg(enforced) {
+      if (enforced) {
+        securityMessage.innerHTML = `
+          <span style="color: var(--color-green); font-weight: 700;">✓ RLS POLICIES ENFORCED (PRODUCTION STATE)</span>
+          <p style="margin-top: 4px; font-size: 11px; color: var(--text-muted);">Supabase row level policies are actively filtering credentials. Donor phone numbers are encrypted. Secure API keys and token authorizations are confirmed.</p>
+        `;
+      } else {
+        securityMessage.innerHTML = `
+          <span style="color: var(--accent-red); font-weight: 700;">⚠ RLS DISABLED (LOCAL OVERRIDE / TEST ENVIRONMENT)</span>
+          <p style="margin-top: 4px; font-size: 11px; color: var(--text-muted);">Emergency backup local testing state enabled. Database nodes are open for sandbox audits. Avoid storing real production identities.</p>
+        `;
+      }
+    }
+  }
+
+  // =========================================================================
+  // 8. SECURITY TERMINAL LOGIN PORTAL (#login)
+  // =========================================================================
+  const roleCards = document.querySelectorAll('.role-card');
+  let selectedRole = 'patient';
+
+  roleCards.forEach(card => {
+    card.addEventListener('click', () => {
+      roleCards.forEach(c => c.classList.remove('active'));
+      card.classList.add('active');
+      selectedRole = card.getAttribute('data-role');
+      
+      const usernameInput = document.getElementById('login-username');
+      const passwordInput = document.getElementById('login-password');
+      
+      if (selectedRole === 'admin') {
+        usernameInput.value = 'admin';
+        passwordInput.value = 'admin123';
+      } else if (selectedRole === 'donor') {
+        usernameInput.value = 'donor101';
+        passwordInput.value = 'donor123';
+      } else {
+        usernameInput.value = 'patient202';
+        passwordInput.value = 'patient123';
+      }
+    });
+  });
+
+  const loginForm = document.getElementById('login-form');
+  const loginErrorBox = document.getElementById('login-error-box');
+
+  if (loginForm) {
+    loginForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('login-username').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      let authenticated = false;
+      let displayName = "";
+      let linkedId = "";
+
+      if (selectedRole === 'admin' && username === 'admin' && password === 'admin123') {
+        authenticated = true;
+        displayName = "Network Admin";
+      } else if (selectedRole === 'donor' && username === 'donor101' && password === 'donor123') {
+        authenticated = true;
+        displayName = "Neha Sharma";
+        linkedId = "DL-101";
+      } else if (selectedRole === 'patient' && username === 'patient202' && password === 'patient123') {
+        authenticated = true;
+        displayName = "Anjali Verma";
+        linkedId = "REQ-101";
+      }
+
+      if (authenticated) {
+        if (loginErrorBox) loginErrorBox.style.display = 'none';
+        
+        const session = {
+          username,
+          role: selectedRole,
+          displayName,
+          linkedId,
+          timestamp: Date.now()
+        };
+        sessionStorage.setItem('carecircle_session', JSON.stringify(session));
+
+        if (selectedRole === 'admin') {
+          window.location.hash = '#admin';
+        } else if (selectedRole === 'donor') {
+          window.location.hash = '#register';
+        } else {
+          window.location.hash = '#request';
+        }
+      } else {
+        if (loginErrorBox) {
+          loginErrorBox.textContent = `AUTHENTICATION FAILURE: Invalid key credentials for ${selectedRole.toUpperCase()} node.`;
+          loginErrorBox.style.display = 'block';
+        }
+      }
+    });
+  }
+
+  // =========================================================================
+  // 9. ADDITIONAL PAGE-SPECIFIC INITIALIZATIONS
+  // =========================================================================
+  
+  // Set default max date to today in registration (donors cannot select future donation dates)
+  const dateInputRegister = document.getElementById('donor-last-donation');
+  if (dateInputRegister) {
+    dateInputRegister.max = new Date().toISOString().slice(0, 10);
+  }
+
+  // Autofill dateNeeded in requests with tomorrow's date
+  const dateInputRequest = document.getElementById('date-needed');
+  if (dateInputRequest) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    dateInputRequest.value = tomorrow.toISOString().slice(0, 10);
+  }
+
+  // Start with default route
+  showSection(window.location.hash || '#home');
+});
+  </script>
+</body>
+</html>

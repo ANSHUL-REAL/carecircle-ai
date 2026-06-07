@@ -1,0 +1,16 @@
+.worktrees/
+worktrees/
+
+__pycache__/
+.pytest_cache/
+*.py[cod]
+.venv/
+
+iii-project/automation/.build/
+iii-project/automation/*.zip
+iii-project/carecircle-lightsail-key.pem
+
+node_modules/
+.env
+.env.*
+!.env.example

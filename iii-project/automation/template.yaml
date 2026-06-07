@@ -1,0 +1,229 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: CareCircle Python automation API with bounded EventBridge scheduling.
+
+Parameters:
+  AuthSecret:
+    Type: String
+    NoEcho: true
+  SesFromEmail:
+    Type: String
+    Default: anshulnautiyal2006@gmail.com
+  OutreachMode:
+    Type: String
+    Default: simulation
+    AllowedValues: [simulation, email, sms]
+  AutoApproveOutreach:
+    Type: String
+    Default: "true"
+    AllowedValues: ["true", "false"]
+
+Resources:
+  CasesTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CareCircleCases
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+  DonorsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CareCircleDonors
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+  ApprovalsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CareCircleApprovals
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+  OutreachTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CareCircleOutreach
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: case_id
+          AttributeType: S
+        - AttributeName: attempt_key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: case_id
+          KeyType: HASH
+        - AttributeName: attempt_key
+          KeyType: RANGE
+  TasksTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CareCircleTasks
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: id
+          AttributeType: S
+      KeySchema:
+        - AttributeName: id
+          KeyType: HASH
+  EventsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: CareCircleEvents
+      BillingMode: PAY_PER_REQUEST
+      AttributeDefinitions:
+        - AttributeName: case_id
+          AttributeType: S
+        - AttributeName: event_key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: case_id
+          KeyType: HASH
+        - AttributeName: event_key
+          KeyType: RANGE
+
+  AutomationRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: CareCircleAutomationLambdaRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+      Policies:
+        - PolicyName: CareCircleAutomationAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Effect: Allow
+                Action:
+                  - logs:CreateLogGroup
+                  - logs:CreateLogStream
+                  - logs:PutLogEvents
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - dynamodb:GetItem
+                  - dynamodb:PutItem
+                  - dynamodb:UpdateItem
+                  - dynamodb:Scan
+                  - dynamodb:Query
+                  - dynamodb:TransactWriteItems
+                Resource:
+                  - !GetAtt CasesTable.Arn
+                  - !GetAtt DonorsTable.Arn
+                  - !GetAtt ApprovalsTable.Arn
+                  - !GetAtt OutreachTable.Arn
+                  - !GetAtt TasksTable.Arn
+                  - !GetAtt EventsTable.Arn
+              - Effect: Allow
+                Action: ses:SendEmail
+                Resource: "*"
+              - Effect: Allow
+                Action: sns:Publish
+                Resource: "*"
+
+  AutomationFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      FunctionName: CareCircleAutomationApi
+      Runtime: python3.12
+      Handler: app.handler.handler
+      Role: !GetAtt AutomationRole.Arn
+      Timeout: 30
+      MemorySize: 512
+      Code: carecircle-automation.zip
+      Environment:
+        Variables:
+          AUTH_SECRET: !Ref AuthSecret
+          OUTREACH_MODE: !Ref OutreachMode
+          AUTO_APPROVE_OUTREACH: !Ref AutoApproveOutreach
+          MAX_CASES_PER_RUN: "25"
+          SES_FROM_EMAIL: !Ref SesFromEmail
+          CASES_TABLE: !Ref CasesTable
+          DONORS_TABLE: !Ref DonorsTable
+          APPROVALS_TABLE: !Ref ApprovalsTable
+          OUTREACH_TABLE: !Ref OutreachTable
+          TASKS_TABLE: !Ref TasksTable
+          EVENTS_TABLE: !Ref EventsTable
+
+  AutomationApi:
+    Type: AWS::ApiGatewayV2::Api
+    Properties:
+      Name: CareCircleAutomationHttpApi
+      ProtocolType: HTTP
+      CorsConfiguration:
+        AllowOrigins: ["*"]
+        AllowMethods: ["GET", "POST", "OPTIONS"]
+        AllowHeaders: ["Content-Type", "Authorization", "Idempotency-Key"]
+  AutomationIntegration:
+    Type: AWS::ApiGatewayV2::Integration
+    Properties:
+      ApiId: !Ref AutomationApi
+      IntegrationType: AWS_PROXY
+      IntegrationUri: !GetAtt AutomationFunction.Arn
+      PayloadFormatVersion: "2.0"
+  AutomationRoute:
+    Type: AWS::ApiGatewayV2::Route
+    Properties:
+      ApiId: !Ref AutomationApi
+      RouteKey: "ANY /{proxy+}"
+      Target: !Sub integrations/${AutomationIntegration}
+  AutomationStage:
+    Type: AWS::ApiGatewayV2::Stage
+    Properties:
+      ApiId: !Ref AutomationApi
+      StageName: "$default"
+      AutoDeploy: true
+  AutomationInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref AutomationFunction
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn: !Sub arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${AutomationApi}/*/*/*
+
+  AutomationSchedule:
+    Type: AWS::Events::Rule
+    Properties:
+      Name: CareCircleAutomationEvery15Minutes
+      Description: Runs bounded donor follow-up and escalation automation.
+      ScheduleExpression: "rate(15 minutes)"
+      State: ENABLED
+      Targets:
+        - Id: CareCircleAutomationLambda
+          Arn: !GetAtt AutomationFunction.Arn
+          Input: '{"source":"carecircle.scheduler","detail-type":"CareCircle Automation Tick"}'
+          RetryPolicy:
+            MaximumRetryAttempts: 1
+            MaximumEventAgeInSeconds: 900
+
+  AutomationScheduleInvokePermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName: !Ref AutomationFunction
+      Action: lambda:InvokeFunction
+      Principal: events.amazonaws.com
+      SourceArn: !GetAtt AutomationSchedule.Arn
+
+Outputs:
+  AutomationApiUrl:
+    Value: !GetAtt AutomationApi.ApiEndpoint
+  AutomationFunctionName:
+    Value: !Ref AutomationFunction
+  AutomationScheduleArn:
+    Value: !GetAtt AutomationSchedule.Arn

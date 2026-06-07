@@ -1,0 +1,18 @@
+services:
+  carecircle-automation:
+    build:
+      context: .
+      dockerfile: automation/Dockerfile
+    env_file:
+      - .env.docker
+    restart: unless-stopped
+
+  carecircle-web:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    depends_on:
+      - carecircle-automation
+    ports:
+      - "80:80"
+    restart: unless-stopped

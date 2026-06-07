@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dataset Registry | CareCircle AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="dataset">
+  <nav class="navbar scrolled" id="main-nav">
+    <a href="index.html" class="logo"><span class="logo-icon"></span>CareCircle<span>AI</span></a>
+    <ul class="nav-links" id="nav-menu"></ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu"><svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg></button>
+  </nav>
+  <main class="page-container wide-page" data-carecircle-loading>
+    <div class="page-header dashboard-page-header"><div><span class="eyebrow">Complete Anonymized Import</span><h1>Dataset Registry</h1><p>Search and inspect every normalized row imported from Dataset.csv.</p></div></div>
+    <section class="dataset-metrics">
+      <div class="metric-card"><span>Source rows</span><h2 id="dataset-total">0</h2><p>Every CSV row loaded</p></div>
+      <div class="metric-card"><span>Unique users</span><h2 id="dataset-users">0</h2><p>Anonymized identities</p></div>
+      <div class="metric-card"><span>Donor profiles</span><h2 id="dataset-donors">0</h2><p>Bridge and emergency donors</p></div>
+      <div class="metric-card"><span>Care circles</span><h2 id="dataset-circles">0</h2><p>Recurring bridge groups</p></div>
+    </section>
+    <section class="dashboard-card dataset-panel">
+      <div class="dataset-toolbar">
+        <label>Search<input id="dataset-search" type="search" placeholder="Record, entity, bridge, role, status"></label>
+        <label>Role<select id="dataset-role"></select></label>
+        <label>Blood group<select id="dataset-blood"><option value="">All groups</option><option>O-</option><option>O+</option><option>A-</option><option>A+</option><option>B-</option><option>B+</option><option>AB-</option><option>AB+</option></select></label>
+      </div>
+      <div class="admin-table-wrapper"><table class="admin-table dataset-table"><thead><tr><th>Record</th><th>Entity</th><th>Role</th><th>Blood</th><th>Gender</th><th>Bridge</th><th>Status</th><th>Donations</th></tr></thead><tbody id="dataset-body"></tbody></table></div>
+      <div class="dataset-pagination"><span id="dataset-status"></span><div><button class="btn btn-secondary btn-sm" id="dataset-prev">Previous</button><button class="btn btn-primary btn-sm" id="dataset-next">Next</button></div></div>
+    </section>
+  </main>
+  <footer><div class="footer-bottom"><p>&copy; 2026 CareCircle AI.</p><p>Source identities remain anonymized.</p></div></footer>
+  <script src="app.js?v=20260607f"></script><script src="carecircle-core.js?v=20260607f"></script><script src="carecircle-pages.js?v=20260607f"></script>
+</body>
+</html>

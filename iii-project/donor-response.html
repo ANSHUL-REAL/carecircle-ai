@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Donor Availability Response | CareCircle AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="donor-response">
+  <nav class="navbar scrolled" id="main-nav">
+    <a href="index.html" class="logo"><span class="logo-icon"></span>CareCircle<span>AI</span></a>
+    <ul class="nav-links" id="nav-menu"></ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+  <main class="page-container response-page" data-carecircle-loading>
+    <div class="page-header">
+      <span class="eyebrow">Private Care Circle Link</span>
+      <h1>Can You Support This Patient?</h1>
+      <p>Your response helps the family coordinate alternatives early. No message is sent outside this local demo.</p>
+    </div>
+
+    <section class="dashboard-card response-case-card">
+      <div class="response-identities">
+        <div><span>Donor</span><strong id="response-donor-name">Loading...</strong><small id="response-donor-meta"></small></div>
+        <div class="connection-arrow">→</div>
+        <div><span>Patient</span><strong id="response-patient-name">Loading...</strong><small id="response-patient-meta"></small></div>
+      </div>
+      <div class="response-case-facts" id="response-case-facts"></div>
+    </section>
+
+    <section class="dashboard-card">
+      <form id="donor-response-form">
+        <div class="response-choice-grid">
+          <label class="response-choice available">
+            <input type="radio" name="response-status" value="available" required>
+            <strong>Available</strong><span>I can support this cycle</span>
+          </label>
+          <label class="response-choice busy">
+            <input type="radio" name="response-status" value="busy">
+            <strong>Busy at Work</strong><span>Ask an alternate donor</span>
+          </label>
+          <label class="response-choice out-area">
+            <input type="radio" name="response-status" value="out_of_area">
+            <strong>Out of Area</strong><span>I am currently too far away</span>
+          </label>
+          <label class="response-choice unavailable">
+            <input type="radio" name="response-status" value="unavailable">
+            <strong>Unavailable</strong><span>Not possible this cycle</span>
+          </label>
+        </div>
+
+        <div class="form-row response-details-row">
+          <div class="form-group">
+            <label for="response-location">Current Location / Area</label>
+            <input id="response-location" type="text" placeholder="e.g. Secunderabad or Bengaluru">
+          </div>
+          <div class="form-group">
+            <label for="response-available-from">Available From</label>
+            <input id="response-available-from" type="date">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="response-note">Short Note</label>
+          <textarea id="response-note" rows="3" placeholder="Shift ends at 7 PM, travelling this week, can donate tomorrow morning..."></textarea>
+        </div>
+        <button class="btn btn-primary btn-block" type="submit">Send Availability Response</button>
+      </form>
+      <div class="response-success" id="response-success"></div>
+    </section>
+  </main>
+
+  <footer><div class="footer-bottom"><p>&copy; 2026 CareCircle AI. Private donor response portal.</p><p>Coordination data remains in this browser demo.</p></div></footer>
+  <script src="app.js?v=20260607f"></script>
+  <script src="carecircle-core.js?v=20260607f"></script>
+  <script src="carecircle-pages.js?v=20260607f"></script>
+</body>
+</html>

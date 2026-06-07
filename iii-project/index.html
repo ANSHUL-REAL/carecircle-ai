@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CareCircle AI | National Blood Intelligence Network</title>
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="CareCircle AI is a National Blood Intelligence Network for forecasting shortages, monitoring blood bank inventory, coordinating redistribution, and activating emergency response.">
+  <meta name="keywords" content="CareCircle AI, national blood grid, blood intelligence, blood shortage forecasting, blood bank inventory, e-RaktKosh, healthcare command center">
+  <meta name="author" content="CareCircle AI">
+  
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="home">
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="main-nav">
+    <a href="index.html" class="logo">
+      <span class="logo-icon"></span>
+      CareCircle<span>AI</span>
+    </a>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu" aria-expanded="false" aria-controls="nav-menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+    <ul class="nav-links" id="nav-menu">
+      <li><a href="index.html" class="active">Home</a></li>
+      <li><a href="request.html">Find Blood</a></li>
+      <li><a href="register.html">Register Donor</a></li>
+      <li><a href="hoon-buddy.html">Hoon Buddy Voice</a></li>
+      <li><a href="map.html">Blood Banks</a></li>
+      <li><a href="admin.html">Admin</a></li>
+      <li><a href="request.html" class="btn-cta">Request Now</a></li>
+    </ul>
+  </nav>
+
+  <!-- Pinning wrapper for scroll day-to-night sticky effects -->
+  <div class="hero-pinned-wrapper" id="hero-pinned-wrapper">
+    <header class="hero-landing" id="hero-sec">
+      <!-- Sky Background layer -->
+      <div class="sky-bg-layer" id="sky-bg"></div>
+
+      <!-- Drones -->
+      <img src="assets/drone.webp" alt="Drone" class="drone-layer left-drone" id="left-drone" />
+      <img src="assets/drone.webp" alt="Drone" class="drone-layer right-drone" id="right-drone" />
+
+      <!-- Buildings -->
+      <img src="assets/building.webp" alt="Building Day" class="building-layer day-building" id="day-building" />
+      <img src="assets/building-dark.webp" alt="Building Night" class="building-layer night-building" id="night-building" />
+
+      <!-- SVGs Waves Container -->
+      <div class="waves-container-layer" id="waves-container">
+        <!-- SVG Large Screen (viewBox 0 0 1691 156) -->
+        <svg viewBox="0 0 1691 156" fill="none" xmlns="http://www.w3.org/2000/svg" class="wave-svg lg-wave" id="lg-wave">
+          <g style="will-change: transform, filter">
+            <path id="lg-back" d="M1585.83 57.1904C1611.51 59.1861 1666.65 38.3979 1691 27.7543V145H0V114.067V5.80177C2.39856 34.7389 27.0117 80.7389 106.276 33.2419C205.355 -26.1293 249.637 5.80176 340.968 38.2311C432.298 70.6604 405.176 22.765 518.647 5.80177C632.119 -11.1614 603.889 78.1448 722.342 43.2205C840.795 8.29623 857.401 -1.68213 973.086 38.2313C1088.77 78.1448 1094.86 22.7656 1201.69 18.2753C1308.52 13.785 1260.92 101.095 1384.9 47.2121C1508.89 -6.67106 1553.73 54.6959 1585.83 57.1904Z" fill="#4C8192" />
+            <image id="lg-bus" href="assets/bus.webp" x="0" y="-210" width="540" height="400" />
+            <path id="lg-middle" d="M95.0254 71.3663C71.8192 72.9382 22.0059 56.5646 0 48.1813V142.886V156H304.081H1657.94L1688.45 124.563C1694.29 105.831 1693.85 58.8586 1645.44 20.8195C1584.92 -26.7294 1494.4 86.8378 1431.88 52.5036C1342.36 5.7406 1302.35 30.8907 1219.83 56.4332C1137.3 81.9757 1161.81 44.2515 1059.28 30.8907C956.755 17.5299 982.262 87.8707 875.234 60.363C768.205 32.8554 753.201 24.9961 648.673 56.4334C544.145 87.8707 538.644 44.252 442.118 40.7153C345.592 37.1786 388.604 105.947 276.574 63.507C164.544 21.0666 124.033 69.4015 95.0254 71.3663Z" fill="#5B8898" />
+            <g class="lg-boat-group">
+              <image id="lg-boat" href="assets/boat.webp" x="0" y="-150" width="480" height="360" />
+            </g>
+            <path id="lg-front" d="M105.169 104.525C79.4853 105.695 24.3548 93.5091 0 87.2698V156H1691V137.867V74.401C1688.6 91.3642 1663.99 118.33 1584.72 90.4866C1485.64 55.6828 1441.36 74.401 1350.03 93.4113C1258.7 112.422 1285.82 84.345 1172.35 74.401C1058.88 64.4571 1087.11 116.809 968.658 96.3362C850.205 75.8633 833.599 70.0139 717.914 93.4115C602.229 116.809 596.14 84.3453 489.311 81.7131C382.482 79.0809 430.084 130.263 306.096 98.676C182.108 67.0894 137.273 103.063 105.169 104.525Z" fill="#437485" fill-opacity="0.84" />
+          </g>
+        </svg>
+
+        <!-- SVG Medium Screen (viewBox 0 0 1351 156) -->
+        <svg viewBox="0 0 1351 156" fill="none" xmlns="http://www.w3.org/2000/svg" class="wave-svg md-wave" id="md-wave">
+          <g style="will-change: transform, filter">
+            <path id="md-back" d="M973.086 38.2313C1088.77 78.1448 1094.86 22.7656 1201.69 18.2753C1296.85 14.2754 1269.47 83.1217 1350 60.1164V145H0V114.067V5.80177C2.39856 34.7389 27.0117 80.7389 106.276 33.2419C205.355 -26.1293 249.637 5.80177 340.968 38.2311C432.298 70.6604 405.176 22.765 518.647 5.80177C632.118 -11.1614 603.889 78.1448 722.342 43.2205C840.795 8.29623 857.401 -1.68213 973.086 38.2313Z" fill="#4C8192" />
+            <image id="md-bus" href="assets/bus.webp" x="0" y="-170" width="430" height="320" />
+            <path id="md-middle" d="M95.0254 71.3666C71.8192 72.9384 22.0059 56.5649 0 48.1816V142.886V156H304.081H1349.5V26.582C1307.67 24.0674 1272.37 40.1709 1219.83 56.4335C1137.3 81.976 1161.81 44.2518 1059.28 30.891C956.755 17.5301 982.262 87.8709 875.233 60.3633C768.205 32.8557 753.201 24.9964 648.673 56.4337C544.145 87.8709 538.644 44.252 442.118 40.7156C345.592 37.1789 388.604 105.948 276.574 63.5072C164.544 21.0669 124.033 69.4017 95.0254 71.3666Z" fill="#5B8898" />
+            <g class="md-boat-group">
+              <image id="md-boat" href="assets/boat.webp" x="0" y="-110" width="380" height="285" />
+            </g>
+            <path id="md-front" d="M105.169 104.525C79.4853 105.695 24.3548 93.509 0 87.2696V156H1350.03V93.4112C1258.7 112.421 1285.82 84.3448 1172.35 74.4009C1058.88 64.4569 1087.11 116.809 968.658 96.336C850.205 75.8632 833.599 70.0138 717.914 93.4113C602.229 116.809 596.14 84.3452 489.311 81.713C382.482 79.0807 430.084 130.263 306.096 98.6759C182.108 67.0892 137.273 103.063 105.169 104.525Z" fill="#437485" fill-opacity="0.84" />
+          </g>
+        </svg>
+
+        <!-- SVG Small Screen (viewBox 0 0 802 156) -->
+        <svg viewBox="0 0 802 156" fill="none" xmlns="http://www.w3.org/2000/svg" class="wave-svg sm-wave" id="sm-wave">
+          <g style="will-change: transform, filter">
+            <path id="sm-back" d="M518.647 5.80177C632.118 -11.1614 603.889 78.1448 722.342 43.2205C755.356 33.4867 780.459 25.6908 802 20.3727V145H0V114.067V5.80177C2.39856 34.7389 27.0117 80.7389 106.276 33.2419C205.356 -26.1293 249.637 5.80177 340.968 38.2311C432.298 70.6604 405.176 22.765 518.647 5.80177Z" fill="#4C8192" />
+            <image id="sm-bus" href="assets/bus.webp" x="0" y="-100" width="340" height="255" />
+            <path id="sm-middle" d="M95.0254 71.3662C71.8192 72.9381 22.0059 56.5645 0 48.1813V142.886V156H304.081H802V42.0982C752.402 31.5657 723.438 33.9474 648.673 56.4333C544.145 87.8706 538.644 44.252 442.118 40.7153C345.592 37.1786 388.604 105.947 276.574 63.5069C164.544 21.0666 124.033 69.4014 95.0254 71.3662Z" fill="#5B8898" />
+            <g class="sm-boat-group">
+              <image id="sm-boat" href="assets/boat.webp" x="0" y="-70" width="310" height="235" />
+            </g>
+            <path id="sm-front" d="M105.169 104.525C79.4853 105.695 24.3548 93.5088 0 87.2694V156H802V79.7324C779.407 81.8354 753.294 86.2555 717.914 93.4111C602.229 116.809 596.14 84.345 489.311 81.7128C382.482 79.0806 430.084 130.262 306.096 98.6757C182.108 67.0891 137.273 103.063 105.169 104.525Z" fill="#437485" fill-opacity="0.84" />
+          </g>
+        </svg>
+      </div>
+
+      <!-- Landing text overlay -->
+      <div class="landing-content">
+        <p class="welcome-text">National Blood Intelligence Network</p>
+        <h1 class="landing-title">CareCircle AI</h1>
+        <p class="hero-desc" style="max-width: 600px; margin-bottom: 24px; color: inherit;">
+          Every day, thousands die because compatible blood cannot be found in time. CareCircle AI acts like a medical assistant that thinks, filters, and prioritizes—instantly forecasting shortages, monitoring bank reserves, and coordinating redistribution.
+        </p>
+        <div class="hero-actions" style="margin-bottom: 32px; display: flex; gap: 16px; justify-content: center;">
+          <a href="request.html" class="btn btn-primary" style="box-shadow: 0 0 20px rgba(239, 68, 68, 0.4);">Find Compatible Donors</a>
+          <a href="patient-circle.html" class="btn btn-secondary">Explore Care Circles</a>
+        </div>
+        <div class="home-data-strip">
+          <div><strong id="home-data-records">7,033</strong><span>Dataset records</span></div>
+          <div><strong id="home-bridge-count">80</strong><span>Care bridges</span></div>
+          <div><strong id="home-readiness-average">--</strong><span>Avg readiness</span></div>
+        </div>
+        <a href="#circles-grid-sec" class="watch-link">
+          <span class="watch-dot"></span>REWRITE HOW THE WORLD FINDS BLOOD
+        </a>
+      </div>
+    </header>
+  </div>
+
+  <!-- 3. The Four Core Circles Pipeline Grid -->
+  <section class="dashboard-section" id="circles-grid-sec">
+    <div class="section-title">
+      <h2>The Four Pillars of the Predictive Pipeline</h2>
+      <p>Transitioning blood support from a reactive panic messaging loop into a predictive, automated standby network.</p>
+    </div>
+
+    <div class="circles-grid">
+      <!-- Circle 01 -->
+      <div class="circle-card">
+        <div class="circle-num">01</div>
+        <h3>Circle 01: Predict</h3>
+        <p>AI models patient transfusion cycles (e.g., Thalassemia on a 21-day recurrence) to schedule blood requirements 10 days out, long before panic sets in.</p>
+      </div>
+      <!-- Circle 02 -->
+      <div class="circle-card">
+        <div class="circle-num">02</div>
+        <h3>Circle 02: Prepare</h3>
+        <p>Filters donor registry for compatibility, verifies eligibility cooldowns, and pre-warms secondary backup networks to secure standby responses.</p>
+      </div>
+      <!-- Circle 03 -->
+      <div class="circle-card">
+        <div class="circle-num">03</div>
+        <h3>Circle 03: Coordinate</h3>
+        <p>Automates tracking confirmations via voice calling, establishes dispatch routes, and activates field volunteer couriers in real-time.</p>
+      </div>
+      <!-- Circle 04 -->
+      <div class="circle-card">
+        <div class="circle-num">04</div>
+        <h3>Circle 04: Prevent</h3>
+        <p>Monitors matching timelines continuously. If primary networks fail, the system instantly triggers backup registries to prevent critical stockouts.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="dashboard-section" id="network-access-sec">
+    <div class="section-title">
+      <h2>Autonomous Care Network</h2>
+      <p>Move from emergency matching to continuous readiness, fair donor coordination, and five-level escalation.</p>
+    </div>
+    <div class="network-quick-access">
+      <a class="quick-access-card" href="patient-circle.html">
+        <span>Patient View</span>
+        <h3>Care Circles</h3>
+        <p>Readiness score, donor rings, forecast calendar, and family status.</p>
+      </a>
+      <a class="quick-access-card" href="donor-profile.html">
+        <span>Donor View</span>
+        <h3>Donor Intelligence</h3>
+        <p>Reliability, availability, fatigue prevention, and match transparency.</p>
+      </a>
+      <a class="quick-access-card" href="volunteer.html">
+        <span>Operations View</span>
+        <h3>Volunteer Center</h3>
+        <p>Risk-prioritized cases, follow-ups, and upcoming transfusions.</p>
+      </a>
+      <a class="quick-access-card" href="outreach.html">
+        <span>Automation View</span>
+        <h3>Outreach Agent</h3>
+        <p>Ranked contact queues and a five-level escalation simulation.</p>
+      </a>
+    </div>
+  </section>
+
+  <!-- 4. YouTube Demo Video -->
+  <section class="dashboard-section" id="matcher-sec">
+    <div class="section-title">
+      <h2>Understanding Thalassemia</h2>
+      <p>Watch this video explaining thalassemia causes, symptoms, diagnosis, and treatment.</p>
+    </div>
+
+    <div class="video-embed-card">
+      <div class="video-embed-wrap">
+        <iframe
+          src="https://www.youtube.com/embed/th_GSpXFEp4?si=dSFSKhxC0GKYJAXm"
+          title="Thalassemia explainer video"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          referrerpolicy="strict-origin-when-cross-origin"
+          allowfullscreen>
+        </iframe>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. Official Thalassemia Articles -->
+  <section class="dashboard-section" id="timeline-sec">
+    <div class="section-title">
+      <h2>Official Thalassemia Articles</h2>
+      <p>Read trusted guidance on transfusion planning and treatment options from CDC and NHLBI.</p>
+    </div>
+
+    <div class="article-resource-grid">
+      <article class="article-resource-card">
+        <div class="article-resource-source">CDC</div>
+        <h3>Understanding a Transfusion Plan</h3>
+        <p>A patient-friendly guide to beta thalassemia transfusion planning, including target hemoglobin levels, timing, and factors providers consider.</p>
+        <ul>
+          <li>Explains why regular transfusions may be needed.</li>
+          <li>Outlines common transfusion timing for beta thalassemia.</li>
+          <li>Lists health factors that can change a transfusion plan.</li>
+        </ul>
+        <a class="btn btn-secondary" href="https://www.cdc.gov/thalassemia/communication-resources/understanding-a-transfusion-plan.html" target="_blank" rel="noopener noreferrer">Read CDC Article</a>
+      </article>
+
+      <article class="article-resource-card">
+        <div class="article-resource-source">NHLBI / NIH</div>
+        <h3>Thalassemia Treatment</h3>
+        <p>An overview of treatment paths for thalassemia, from transfusions and iron chelation therapy to transplant and other medicines.</p>
+        <ul>
+          <li>Describes blood transfusions for moderate or severe thalassemia.</li>
+          <li>Explains iron overload and chelation therapy.</li>
+          <li>Covers stem cell transplant and other treatment options.</li>
+        </ul>
+        <a class="btn btn-secondary" href="https://www.nhlbi.nih.gov/health/thalassemia/treatment" target="_blank" rel="noopener noreferrer">Read NHLBI Article</a>
+      </article>
+    </div>
+  </section>
+
+  <!-- Hoon Buddy Promo Strip -->
+  <section style="background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary)); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color); padding: 60px 24px;">
+    <div style="max-width: 900px; margin: 0 auto; display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center;">
+      <div>
+        <h2 style="font-size: 28px; margin-bottom: 12px; color: var(--accent-red);">Need to find blood fast in a panic?</h2>
+        <p style="color: var(--text-secondary); line-height: 1.6;">Our interactive Voice AI, <strong>Hoon Buddy</strong>, is here to assist. Simply speak your requirements in your local language, and our voice model will instantly answer compatibility questions and start matching protocols.</p>
+      </div>
+      <div>
+        <a href="hoon-buddy.html" class="btn btn-primary" style="padding: 14px 28px; font-weight: 700; box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);">
+          🎙 Talk to Hoon Buddy
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Creator's Promise Section -->
+  <section style="background-color: var(--bg-secondary); border-bottom: 1px solid var(--border-color); padding: 80px 24px;">
+    <div style="max-width: 800px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; gap: 24px;">
+      <div style="font-size: 40px; color: var(--accent-red);">“</div>
+      <h2 style="font-size: 30px; letter-spacing: -0.5px; line-height: 1.3;">
+        "This is my personal promise to ensure that no mother loses her child because help didn't arrive in time, and that no one ever has to beg for blood on WhatsApp again."
+      </h2>
+      <div style="margin-top: 16px;">
+        <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 24px; max-width: 600px; margin-left: auto; margin-right: auto;">
+          We invite donors, developers, and purpose-driven individuals to join the mission and rewrite how the world finds blood with compassion, code, and community.
+        </p>
+        <a href="register.html" class="btn btn-primary">Join the Donor Registry</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>CareCircle<span>AI</span></h3>
+        <p>Rewriting how the world finds blood with compassion, code, and community. AI-powered matching that prioritizes patient survival.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="request.html">Find Donors</a></li>
+          <li><a href="register.html">Register as Donor</a></li>
+          <li><a href="hoon-buddy.html">Hoon Buddy AI</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Locate</h4>
+        <ul>
+          <li><a href="map.html">Blood Bank Map</a></li>
+          <li><a href="admin.html">Admin Dashboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Mission</h4>
+        <ul>
+          <li><a href="https://supabase.com" target="_blank">Supabase DB</a></li>
+          <li><a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 CareCircle AI. All Rights Reserved. Built for global emergency response.</p>
+      <p>Secure connection verified with Supabase RLS</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="aws-config.js?v=20260607f"></script>
+  <script src="app.js?v=20260607f"></script>
+  <script src="carecircle-core.js?v=20260607f"></script>
+  <script src="carecircle-pages.js?v=20260607f"></script>
+</body>
+</html>

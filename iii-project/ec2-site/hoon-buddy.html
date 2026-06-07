@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hoon Buddy Voice Assistant | CareCircle AI AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <nav class="navbar" id="main-nav">
+    <a href="index.html" class="logo">
+      <span class="logo-icon"></span>
+      CareCircle<span>AI</span>
+    </a>
+    <ul class="nav-links" id="nav-menu">
+      <li><a href="index.html">Home</a></li>
+      <li><a href="request.html">Find Blood</a></li>
+      <li><a href="register.html">Register Donor</a></li>
+      <li><a href="hoon-buddy.html" class="active">Hoon Buddy Voice</a></li>
+      <li><a href="map.html">Blood Banks</a></li>
+      <li><a href="admin.html">Admin</a></li>
+      <li><a href="request.html" class="btn-cta">Request Now</a></li>
+    </ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+    <!-- Main Content Container -->
+  <div class="page-container" style="max-width: 1100px;">
+    <div class="page-header">
+      <h1>Hoon Buddy Voice Assistant</h1>
+      <p>Emergency patients in panic often struggle to type out details. Powered by advanced Speech-to-Text and Synthesis, Hoon Buddy offers instant comfort and answers.</p>
+    </div>
+
+    <!-- AWS AI Status Banner -->
+    <div class="api-key-panel" style="background: rgba(76, 217, 100, 0.05); border-color: rgba(76, 217, 100, 0.3);">
+      <div class="api-key-header">
+        <h4 style="color: var(--color-green); display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+          <span style="display: inline-block; width: 8px; height: 8px; background-color: var(--color-green); border-radius: 50%; box-shadow: 0 0 8px var(--color-green);"></span>
+          CareCircle AI Cloud Engine Connected
+        </h4>
+        <p style="color: var(--text-secondary); margin: 0;">Hoon Buddy Voice Assistant is running through Amazon Bedrock Nova Micro with cloud extraction storage.</p>
+      </div>
+      <div style="font-size: 11px; font-weight: 700; color: var(--color-green); background-color: var(--color-green-muted); padding: 6px 12px; border-radius: var(--radius-sm); text-transform: uppercase; letter-spacing: 1px;">
+        Active
+      </div>
+    </div>
+
+    <!-- Voice AI Dual Layout -->
+    <div class="voice-wrapper">
+      
+      <!-- Left: Interactive Mic & Soundwave Console -->
+      <div class="voice-console">
+        <button class="mic-btn" id="mic-btn" aria-label="Toggle Microphone Input">
+          <span class="mic-pulse-ring ring-one"></span>
+          <span class="mic-pulse-ring ring-two"></span>
+          <span class="mic-pulse-ring ring-three"></span>
+          <span class="mic-core"></span>
+          <span class="mic-label">MIC</span>
+        </button>
+        <div class="mic-duration" id="mic-duration" aria-live="polite">00:00</div>
+        
+        <div class="wave-container">
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+          <span class="wave-bar"></span>
+        </div>
+
+        <div class="voice-status" id="voice-status">
+          Listening paused. Press Mic to speak.
+        </div>
+
+        <div class="voice-transcript" id="voice-transcript">
+          <div style="color: var(--text-muted); text-align: center; padding: 16px 0;">
+            Awaiting voice commands or FAQ selections.
+          </div>
+        </div>
+
+        <div class="voice-command-bar">
+          <input type="text" id="voice-command-input" placeholder="Type or speak: arrange A+ blood for me in Hyderabad this week">
+          <button class="btn btn-primary" id="btn-send-command">Send</button>
+        </div>
+      </div>
+
+      <!-- Right: Interactive FAQ Triggers -->
+      <div class="faq-card">
+        <h3>Hoon Buddy Quick Registry</h3>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 8px;">Click on any question below. Hoon Buddy will answer you aloud immediately using Speech Synthesis.</p>
+        
+        <div class="faq-list">
+          <button class="faq-item" data-faq="universal">Who is the universal blood donor?</button>
+          <button class="faq-item" data-faq="tattoo">Can I donate blood if I recently got a tattoo?</button>
+          <button class="faq-item" data-faq="cooldown">How long must I wait between blood donations?</button>
+          <button class="faq-item" data-faq="matching">How does CareCircle AI's AI matching algorithm work?</button>
+          <button class="faq-item" data-faq="supabase">How does the platform secure donor phone numbers?</button>
+          <button class="faq-item" data-faq="begging">What is the primary problem with WhatsApp coordination?</button>
+          <button class="faq-item" data-faq="age">What are the age and weight limits for blood donation?</button>
+          <button class="faq-item" data-faq="pregnancy">Can pregnant or breastfeeding women donate blood?</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <h3>CareCircle<span>AI</span></h3>
+        <p>Rewriting how the world finds blood with compassion, code, and community. AI-powered matching that prioritizes patient survival.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Platform</h4>
+        <ul>
+          <li><a href="request.html">Find Donors</a></li>
+          <li><a href="register.html">Register as Donor</a></li>
+          <li><a href="hoon-buddy.html">Hoon Buddy AI</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Locate</h4>
+        <ul>
+          <li><a href="map.html">Blood Bank Map</a></li>
+          <li><a href="admin.html">Admin Dashboard</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Mission</h4>
+        <ul>
+          <li><a href="https://aws.amazon.com/dynamodb/" target="_blank">AWS DynamoDB</a></li>
+          <li><a href="https://openstreetmap.org" target="_blank">OpenStreetMap</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2026 CareCircle AI. All Rights Reserved. Built for global emergency response.</p>
+      <p>Secure cloud workflows powered by AWS</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="aws-config.js?v=20260607f"></script>
+  <script src="hoon-action.js"></script>
+  <script src="app.js?v=20260607f"></script>
+</body>
+</html>

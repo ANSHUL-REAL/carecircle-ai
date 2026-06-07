@@ -1,0 +1,13 @@
+{
+  "name": "carecircle-aws-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "AWS-ready backend API for CareCircle AI under a low-cost Lightsail budget.",
+  "scripts": {
+    "start": "node server.js",
+    "check": "node --check server.js && node --check app.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

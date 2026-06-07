@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Patient Care Circle | CareCircle AI</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-page="patient-circle">
+  <nav class="navbar scrolled" id="main-nav">
+    <a href="index.html" class="logo"><span class="logo-icon"></span>CareCircle<span>AI</span></a>
+    <ul class="nav-links" id="nav-menu"></ul>
+    <button class="menu-toggle" id="menu-toggle-btn" aria-label="Toggle Menu">
+      <svg width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16m-7 6h7"></path></svg>
+    </button>
+  </nav>
+
+  <main class="page-container wide-page" data-carecircle-loading>
+    <div class="page-header dashboard-page-header">
+      <div>
+        <span class="eyebrow">Autonomous Care Coordination</span>
+        <h1>Patient Care Circle</h1>
+        <p>Readiness, donor coverage, transfusion forecasting, and family status in one operational view.</p>
+      </div>
+      <label class="selector-control">Patient
+        <select id="patient-selector"></select>
+      </label>
+    </div>
+
+    <section class="profile-hero-grid">
+      <div class="dashboard-card patient-profile-card">
+        <div class="profile-identity">
+          <div class="profile-avatar" id="patient-avatar">P</div>
+          <div>
+            <span class="badge badge-green">Recurring Care</span>
+            <h2 id="patient-name">Loading patient...</h2>
+            <p id="patient-meta"></p>
+          </div>
+          <div class="blood-token" id="patient-blood">--</div>
+        </div>
+        <div class="readiness-factor-grid" id="readiness-factors"></div>
+      </div>
+      <div class="dashboard-card gauge-card" id="readiness-gauge-container"></div>
+    </section>
+
+    <section class="dashboard-card care-circle-panel">
+      <div class="panel-title-row">
+        <div><span class="eyebrow">Five-Layer Coverage</span><h2>Care Circle Network</h2></div>
+        <a class="btn btn-secondary btn-sm" href="outreach.html">Open Outreach Agent</a>
+      </div>
+      <div class="care-circle-layout">
+        <svg id="care-circle-svg" class="care-circle-viz" viewBox="0 0 500 500" role="img" aria-label="Concentric patient care circle"></svg>
+        <div class="circle-roster" id="circle-roster"></div>
+      </div>
+    </section>
+
+    <section class="dashboard-card connection-board-panel">
+      <div class="panel-title-row">
+        <div>
+          <span class="eyebrow">Patient ↔ Donor Handoff</span>
+          <h2>Donor Connection Board</h2>
+          <p class="panel-description">Share each private response link. Busy or out-of-area donors are automatically replaced by the strongest available match.</p>
+        </div>
+        <div class="connection-summary" id="connection-summary"></div>
+      </div>
+      <div class="recommended-connection" id="recommended-connection"></div>
+      <div class="donor-connection-grid" id="donor-connection-grid"></div>
+      <div class="alternate-donor-list" id="alternate-donor-list"></div>
+    </section>
+
+    <section class="dashboard-card forecast-panel">
+      <div class="panel-title-row"><div><span class="eyebrow">Predictive Timeline</span><h2>Transfusion Forecast</h2></div></div>
+      <div class="forecast-summary" id="forecast-summary"></div>
+      <div class="forecast-calendar" id="forecast-calendar"></div>
+    </section>
+
+    <section class="dashboard-card status-panel">
+      <div class="panel-title-row"><div><span class="eyebrow">Family View</span><h2>Care Status Tracker</h2></div></div>
+      <div class="status-tracker" id="patient-status-tracker"></div>
+    </section>
+  </main>
+
+  <footer><div class="footer-bottom"><p>&copy; 2026 CareCircle AI. Dataset-backed coordination demo.</p><p>Patient identities are anonymized.</p></div></footer>
+  <script src="app.js?v=20260607f"></script>
+  <script src="carecircle-core.js?v=20260607f"></script>
+  <script src="carecircle-pages.js?v=20260607f"></script>
+</body>
+</html>
